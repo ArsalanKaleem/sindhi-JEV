@@ -1,0 +1,43 @@
+{
+ "data_config": "configs/data_v3.json",
+ "model": {
+  "max_width": 1024,
+  "max_chars": 96,
+  "d_model": 256,
+  "n_heads": 8,
+  "n_layers": 4,
+  "ffn": 1024,
+  "dropout": 0.1,
+  "cnn_channels": [
+   32,
+   64,
+   128,
+   256
+  ],
+  "use_scan": true,
+  "use_render": true,
+  "char_align": true,
+  "char_head": true,
+  "char_loss_weight": 1.0,
+  "seq_pos_weight": 1.0,
+  "char_pos_weight": 5.0
+ },
+ "train": {
+  "batch": 128,
+  "lr": 0.0005,
+  "weight_decay": 0.05,
+  "warmup": 1000,
+  "clip": 1.0,
+  "fp16": true,
+  "epochs": 30,
+  "steps_per_epoch": 2000,
+  "val_limit": 4000,
+  "log_every": 100,
+  "budget_hours": 9
+ },
+ "notes": [
+  "model v2 (2026-11-22): same architecture and schedule as v1 (60k steps, ~7.5 GPU h), trained on data_v3",
+  "(9 fonts + page realism). Rule fixed before training: report last.pt; v2 replaces v1 as THE model only if its",
+  "val_font_hard AUROC (Mirza, unseen font) is higher than v1's; test sets and the real set play no part in the choice."
+ ]
+}
