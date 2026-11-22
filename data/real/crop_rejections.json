@@ -1,0 +1,10 @@
+{
+ "too_small": 353,
+ "multi_line": 181,
+ "latin": 14,
+ "rule": 197,
+ "no_word_gaps": 127,
+ "empty": 16,
+ "digits": 11,
+ "blob": 3
+}
