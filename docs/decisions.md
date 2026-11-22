@@ -99,3 +99,11 @@ test_font AUROC 0.967 (text 0.952, delta +0.015 [+0.006, +0.023]), char F1 0.81;
 Open question for the owner: train a v2 with more font diversity before the ablations (see chat 2026-11-22).
 Honesty note: this gap was seen on a synthetic TEST set; any v2 must be chosen on a separate held-out-font
 VALIDATION set (a third font family), and both v1 and v2 numbers get reported.
+
+## 2026-11-22: v2 prepared (data_v3 / model_v2)
+
+Data v3: 9 training fonts (+ IBM Plex Sans Arabic, Kufam, Jomhuria, Katibeh; all pass check_fonts) and page realism
+(neighbour-line slivers, bleed-through, stretch, uneven lighting, binarisation). v1/v2 data reproduce exactly (checked).
+Unseen-font validation font: Mirza (Naskh); sets val_font / val_font_hard (2,000 each).
+**v1 on val_font_hard: AUROC 0.9834** (char F1 0.884). Rule fixed before v2 training: v2 becomes the reported
+model only if its val_font_hard AUROC (last.pt) is higher than 0.9834. Test sets and the real set are not used.
