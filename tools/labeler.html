@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sindhi-Jev Labeller</title>
+<style>
+  @font-face { font-family: "SJNaskh"; src: url("../fonts/NotoNaskhArabic.ttf"); }
+  :root { --bg:#fafaf8; --fg:#1d1d1b; --muted:#6b6b66; --line:#d9d8d2; --card:#fff;
+          --bad:#c62828; --badbg:#fde7e7; --ok:#2e7d32; --amb:#f3c623; --acc:#2952a3; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#191918; --fg:#ecebe6; --muted:#9a9993; --line:#3a3936;
+          --card:#232321; --badbg:#4a1f1f; --bad:#ff8a80; --ok:#81c784; --acc:#8fb0ff; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.45 system-ui, sans-serif; }
+  header { display:flex; flex-wrap:wrap; gap:8px 16px; align-items:center; padding:10px 16px;
+           border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--bg); z-index:2; }
+  header h1 { font-size:15px; margin:0 8px 0 0; }
+  label.f { display:inline-flex; gap:6px; align-items:center; color:var(--muted); }
+  main { max-width:1100px; margin:0 auto; padding:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:14px; margin-bottom:12px; }
+  .crop { display:flex; align-items:center; min-height:120px; background:#fff;
+          border-radius:6px; overflow:auto; }
+  .crop img { image-rendering:auto; margin:0 auto; flex:none; } /* auto margins: wide crops overflow only rightward-scrollable, never cut off */
+  .ar { font-family:"SJNaskh","Noto Naskh Arabic","Scheherazade New",serif; direction:rtl; }
+  textarea#gold { width:100%; font-size:30px; padding:8px 10px; border:2px solid var(--acc); border-radius:6px;
+                  background:var(--card); color:var(--fg); resize:vertical; min-height:62px; }
+  .chars { font-size:28px; display:flex; flex-wrap:wrap; gap:1px; direction:rtl; min-height:44px; }
+  .chars span { padding:0 3px; border-radius:3px; cursor:pointer; border-bottom:3px solid transparent; }
+  .chars span.sp { min-width:14px; }
+  .chars span.amb { background:var(--amb); color:#000; }
+  .chars span.bad { background:var(--badbg); color:var(--bad); border-bottom-color:var(--bad); }
+  .chars span.ovr { outline:2px dashed var(--acc); }
+  table { width:100%; border-collapse:collapse; }
+  td { padding:6px 8px; border-top:1px solid var(--line); vertical-align:middle; }
+  td.eng { width:120px; color:var(--muted); font-family:ui-monospace,monospace; font-size:12px; }
+  td.v { width:70px; font-weight:600; }
+  .okc { color:var(--ok); } .badc { color:var(--bad); }
+  .palette { display:flex; flex-wrap:wrap; gap:4px; direction:rtl; }
+  .palette button { font-size:22px; min-width:38px; }
+  button { font:inherit; padding:6px 12px; border:1px solid var(--line); border-radius:6px; background:var(--card);
+           color:var(--fg); cursor:pointer; }
+  button.primary { background:var(--acc); color:#fff; border-color:var(--acc); }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  .muted { color:var(--muted); }
+  .help { font-size:13px; color:var(--muted); }
+  progress { width:160px; }
+  @media (max-width:640px) { textarea#gold { font-size:24px; } td.eng { width:80px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Sindhi-Jev labeller</h1>
+  <label class="f">Crops folder <input type="file" id="dir" webkitdirectory multiple></label>
+  <label class="f">crops.csv <input type="file" id="cropsCsv" accept=".csv"></label>
+  <label class="f">candidates.csv <input type="file" id="candCsv" accept=".csv"></label>
+  <label class="f">Pass <select id="pass"><option value="1">1</option><option value="2">2 (blind relabel)</option></select></label>
+  <label class="f">Queue (optional) <input type="file" id="queue" accept=".txt,.csv"></label>
+  <button id="export">Export gold.csv</button>
+  <span id="prog" class="muted"></span>
+</header>
+<main>
+  <div id="empty" class="card help">
+    Load the <b>crops folder</b>, <b>crops.csv</b> and <b>candidates.csv</b> from <code>data/real/</code>.
+    Work is saved in this browser automatically (per pass); press <b>Export gold.csv</b> at the end of each
+    session and put the file in <code>data/real/</code>. Keys: <b>Ctrl+Enter</b> save &amp; next,
+    <b>Ctrl+←/→</b> previous / next. Click a gold character to mark it <b>ambiguous</b> (dot unreadable in the scan).
+    Click a character in an engine row to <b>override</b> its auto mark.
+  </div>
+  <div id="ui" hidden>
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <div><b id="cid"></b> <span id="meta" class="muted"></span></div>
+        <div class="row"><label class="f">Zoom <input type="range" id="zoom" min="1" max="6" step="0.25" value="2"></label></div>
+      </div>
+      <div class="crop" style="margin-top:8px"><img id="img" alt="crop"></div>
+    </div>
+    <div class="card">
+      <div class="help">Type exactly what is printed (canonical ه ي ڪ). Pre-filled from <span id="prefillEng"></span> only to save typing.</div>
+      <textarea id="gold" class="ar" dir="rtl" spellcheck="false"></textarea>
+      <div class="palette" id="palette" style="margin:6px 0"></div>
+      <div class="help">Gold characters (click = ambiguous):</div>
+      <div class="chars ar" id="goldChars"></div>
+    </div>
+    <div class="card">
+      <table id="cands"></table>
+    </div>
+    <div class="row">
+      <button id="prev">← Prev</button>
+      <button class="primary" id="save">Save &amp; next (Ctrl+Enter)</button>
+      <button data-status="illegible" class="st">Illegible</button>
+      <button data-status="bad_crop" class="st">Bad crop</button>
+      <button data-status="not_sindhi" class="st">Not Sindhi</button>
+      <span id="saved" class="muted"></span>
+    </div>
+  </div>
+</main>
+<script>
+"use strict";
+const PALETTE = "ٻڀٿٽٺڄڃڇڌڏڊڍڙڦڪکڳڱڻ۽ءآئؤ".split("");
+const S = { crops: [], cands: {}, files: {}, i: 0, pass: "1", queue: null, labels: {}, t0: Date.now(), amb: new Set(), ovr: {} };
+const $ = id => document.getElementById(id);
+
+function parseCSV(text) {
+  text = text.replace(/^﻿/, "");
+  const rows = []; let row = [], f = "", q = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ",") { row.push(f); f = ""; }
+    else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(f); rows.push(row); row = []; f = ""; }
+    else f += c;
+  }
+  if (f !== "" || row.length) { row.push(f); rows.push(row); }
+  const h = rows.shift() || [];
+  return rows.filter(r => r.length > 1 || r[0]).map(r => Object.fromEntries(h.map((k, j) => [k, r[j] ?? ""])));
+}
+const csvCell = v => /[",\n\r]/.test(v = String(v ?? "")) ? '"' + v.replace(/"/g, '""') + '"' : v;
+const readFile = f => new Promise(r => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsText(f, "utf-8"); });
+
+// Same alignment and label rules as src/sindhijev/align.py
+function deriveLabels(gold, cand) {
+  const g = [...gold], c = [...cand], n = g.length, m = c.length;
+  const D = Array.from({ length: n + 1 }, (_, i) => { const r = new Array(m + 1).fill(0); r[0] = i; return r; });
+  for (let j = 0; j <= m; j++) D[0][j] = j;
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++)
+    D[i][j] = Math.min(D[i - 1][j - 1] + (g[i - 1] !== c[j - 1] ? 1 : 0), D[i - 1][j] + 1, D[i][j - 1] + 1);
+  const lab = new Array(m).fill(0); let i = n, j = m, nerr = 0;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && D[i][j] === D[i - 1][j - 1] + (g[i - 1] !== c[j - 1] ? 1 : 0)) {
+      if (g[i - 1] !== c[j - 1]) { lab[j - 1] = 1; nerr++; } i--; j--;
+    } else if (i > 0 && D[i][j] === D[i - 1][j] + 1) {
+      const p = j < m ? j : m - 1; if (p >= 0) lab[p] = 1; nerr++; i--;
+    } else { lab[j - 1] = 1; nerr++; j--; }
+  }
+  return { lab, nerr };
+}
+const norm = s => s.normalize("NFC").replace(/[‌‍]/g, "").split(/\s+/).filter(Boolean).join(" ");
+
+function storeKey() { return "sindhijev-gold-pass" + S.pass; }
+function loadStore() { try { S.labels = JSON.parse(localStorage.getItem(storeKey()) || "{}"); } catch { S.labels = {}; } }
+function saveStore() { try { localStorage.setItem(storeKey(), JSON.stringify(S.labels)); } catch (e) { $("saved").textContent = "browser storage failed: export now!"; } }
+
+function order() { return S.queue ? S.crops.filter(c => S.queue.has(c.crop_id)) : S.crops; }
+
+function engineOrder(cid) {
+  const es = (S.cands[cid] || []).map(r => r.engine);
+  return es;
+}
+
+function show() {
+  const list = order(); if (!list.length) return;
+  S.i = Math.max(0, Math.min(S.i, list.length - 1));
+  const c = list[S.i], cid = c.crop_id, prev = S.labels[cid];
+  $("empty").hidden = true; $("ui").hidden = false;
+  $("cid").textContent = cid;
+  $("meta").textContent = `${c.stratum || ""} · ${S.i + 1}/${list.length} · labelled ${Object.keys(S.labels).length}`;
+  const fname = (c.image_path || "").split(/[\\/]/).pop();
+  const file = S.files[fname];
+  if (file) { $("img").src = URL.createObjectURL(file); }
+  else if (S.base) { $("img").src = S.base + "/" + c.image_path.replace(/\\/g, "/"); }
+  else { $("img").removeAttribute("src"); $("img").alt = "image not found: " + fname; }
+  applyZoom();
+  const rows = S.cands[cid] || [];
+  let prefill = "", peng = "";
+  if (prev) { prefill = prev.gold_text; peng = "your saved label"; }
+  else {
+    const pick = S.pass === "1" ? (rows.find(r => r.engine === "tess_snd") || rows[0]) : (rows.find(r => r.engine !== "tess_snd" && r.cand_text) || rows[0]);
+    prefill = pick ? pick.cand_text : ""; peng = pick ? pick.engine : "nothing";
+  }
+  $("prefillEng").textContent = peng;
+  $("gold").value = prefill;
+  S.amb = new Set(prev && prev.ambiguous_chars ? prev.ambiguous_chars.split(" ").filter(Boolean).map(Number) : []);
+  S.ovr = prev && prev.override_json ? JSON.parse(prev.override_json) : {};
+  S.t0 = Date.now();
+  $("saved").textContent = prev ? `saved: ${prev.status}` : "";
+  renderMarks();
+  $("gold").focus();
+}
+
+function applyZoom() {
+  const im = $("img"); const z = +$("zoom").value;
+  // Sindhi reads right to left: keep the start of a long line (its right end) in view
+  const set = () => { im.style.height = (im.naturalHeight * z) + "px"; const p = im.parentElement; setTimeout(() => { p.scrollLeft = p.scrollWidth; }, 0); };
+  im.onload = set; if (im.complete && im.naturalHeight) set();
+}
+
+function renderMarks() {
+  const gold = norm($("gold").value);
+  const gc = $("goldChars"); gc.innerHTML = "";
+  [...gold].forEach((ch, k) => {
+    const s = document.createElement("span"); s.textContent = ch === " " ? " " : ch;
+    if (ch === " ") s.className = "sp";
+    if (S.amb.has(k)) s.classList.add("amb");
+    s.title = "position " + k + " (click: ambiguous)";
+    s.onclick = () => { S.amb.has(k) ? S.amb.delete(k) : S.amb.add(k); renderMarks(); };
+    gc.appendChild(s);
+  });
+  const t = $("cands"); t.innerHTML = "";
+  const cid = order()[S.i].crop_id;
+  for (const r of S.cands[cid] || []) {
+    const cand = norm(r.cand_text || "");
+    const { lab } = deriveLabels(gold, cand);
+    const ov = new Set(S.ovr[r.engine] || []);
+    const fin = lab.map((v, k) => ov.has(k) ? 1 - v : v);
+    const bad = fin.some(Boolean) || (cand.length === 0 && gold.length > 0);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="eng">${r.engine}<br>conf ${r.seq_conf || "–"}</td><td class="v ${bad ? "badc" : "okc"}">${bad ? "wrong" : "correct"}</td>`;
+    const td = document.createElement("td"); const d = document.createElement("div"); d.className = "chars ar";
+    if (!cand) d.innerHTML = '<span class="muted">(empty)</span>';
+    [...cand].forEach((ch, k) => {
+      const s = document.createElement("span"); s.textContent = ch === " " ? " " : ch;
+      if (ch === " ") s.classList.add("sp");
+      if (fin[k]) s.classList.add("bad"); if (ov.has(k)) s.classList.add("ovr");
+      if (!ALLOW_OVR) { d.appendChild(s); return; }  // read-only unless ?override=1 (accidental clicks, 2026-11-18)
+      s.title = "click: override auto mark";
+      s.onclick = () => { ov.has(k) ? ov.delete(k) : ov.add(k); S.ovr[r.engine] = [...ov]; if (!S.ovr[r.engine].length) delete S.ovr[r.engine]; renderMarks(); };
+      d.appendChild(s);
+    });
+    td.appendChild(d); tr.appendChild(td); t.appendChild(tr);
+  }
+}
+
+function save(status) {
+  const c = order()[S.i]; if (!c) return;
+  const prev = S.labels[c.crop_id];
+  S.labels[c.crop_id] = {
+    crop_id: c.crop_id, pass: S.pass, gold_text: norm($("gold").value), status: status || "ok",
+    ambiguous_chars: [...S.amb].sort((a, b) => a - b).join(" "),
+    override_json: Object.keys(S.ovr).length ? JSON.stringify(S.ovr) : "",
+    seconds: Math.round((Date.now() - S.t0) / 1000) + (prev ? +prev.seconds || 0 : 0),
+    labeled_at: new Date().toISOString(),
+  };
+  saveStore(); S.i++; show();
+}
+
+function exportCSV() {
+  const F = ["crop_id", "pass", "gold_text", "status", "ambiguous_chars", "override_json", "seconds", "labeled_at"];
+  const ids = new Set(S.crops.map(c => c.crop_id));  // never export labels from another dataset
+  const lines = [F.join(","), ...Object.values(S.labels).filter(r => ids.has(r.crop_id)).map(r => F.map(k => csvCell(r[k])).join(","))];
+  const blob = new Blob(["﻿" + lines.join("\n") + "\n"], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+  a.download = `gold_pass${S.pass}_${new Date().toISOString().slice(0, 10)}.csv`; a.click();
+}
+
+function maybeStart() { if (S.crops.length && Object.keys(S.cands).length) { loadStore(); const list = order(); S.i = list.findIndex(c => !S.labels[c.crop_id]); if (S.i < 0) S.i = 0; show(); } }
+
+$("dir").onchange = e => { for (const f of e.target.files) S.files[f.name] = f; maybeStart(); };
+$("cropsCsv").onchange = async e => { S.crops = parseCSV(await readFile(e.target.files[0])); maybeStart(); };
+$("candCsv").onchange = async e => { S.cands = {}; for (const r of parseCSV(await readFile(e.target.files[0]))) (S.cands[r.crop_id] ||= []).push(r); maybeStart(); };
+$("queue").onchange = async e => { S.queue = new Set((await readFile(e.target.files[0])).split(/\r?\n/).map(s => s.split(",")[0].trim()).filter(s => s && s !== "crop_id")); S.i = 0; maybeStart(); };
+const ALLOW_OVR = new URLSearchParams(location.search).get("override") === "1";
+$("pass").onchange = e => { S.pass = e.target.value; maybeStart(); };
+$("gold").oninput = () => { S.amb.clear(); renderMarks(); };
+$("zoom").oninput = applyZoom;
+$("save").onclick = () => save("ok");
+document.querySelectorAll("button.st").forEach(b => b.onclick = () => save(b.dataset.status));
+$("prev").onclick = () => { S.i--; show(); };
+$("export").onclick = exportCSV;
+document.addEventListener("keydown", e => {
+  if (!S.crops.length) return;
+  if (e.ctrlKey && e.key === "Enter") { e.preventDefault(); save("ok"); }
+  if (e.ctrlKey && e.key === "ArrowLeft") { e.preventDefault(); S.i--; show(); }
+  if (e.ctrlKey && e.key === "ArrowRight") { e.preventDefault(); S.i++; show(); }
+});
+const pal = $("palette");
+for (const ch of PALETTE) { const b = document.createElement("button"); b.type = "button"; b.className = "ar"; b.textContent = ch;
+  b.onclick = () => { const t = $("gold"), s = t.selectionStart, en = t.selectionEnd; t.setRangeText(ch, s, en, "end"); t.focus(); t.dispatchEvent(new Event("input")); };
+  pal.appendChild(b); }
+// Server mode: python -m http.server (repo root), open /tools/labeler.html?data=../data/real
+(async () => {
+  const p = new URLSearchParams(location.search), d = p.get("data");
+  if (p.get("pass")) { S.pass = p.get("pass"); $("pass").value = S.pass; }
+  if (!d) return;
+  try {
+    S.base = d;
+    S.crops = parseCSV(await (await fetch(d + "/crops.csv", { cache: "no-store" })).text());
+    for (const r of parseCSV(await (await fetch(d + "/candidates.csv", { cache: "no-store" })).text())) (S.cands[r.crop_id] ||= []).push(r);
+    const q = await fetch(d + "/relabel_queue.txt", { cache: "no-store" });
+    if (S.pass === "2" && q.ok) S.queue = new Set((await q.text()).split(/\r?\n/).filter(Boolean));
+    maybeStart();
+  } catch (e) { $("empty").textContent = "Could not load " + d + ": " + e; }
+})();
+window.addEventListener("beforeunload", e => { if (Object.keys(S.labels).length) { e.preventDefault(); e.returnValue = ""; } });
+</script>
+</body>
+</html>
