@@ -1,0 +1,22 @@
+.venv/
+__pycache__/
+.pytest_cache/
+data/synth/
+data/text/
+*.pyc
+tessdata/
+data/real/raw_pdfs/
+data/synth_draft1/
+data/real_v1_crops/
+runs/
+dist/
+# real scans: most sources are NOT redistributable (see data/real/sources.csv) -> never in git
+data/real/pages/
+data/real/crops/
+data/real/**/crops/
+data/real/**/*.png
+# large / regenerable
+results/*.pkl
+gold_pass1_*.csv
+data/synth/
+*.pt

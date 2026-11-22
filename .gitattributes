@@ -1,0 +1,7 @@
+# keep data files byte-identical (frozen-set SHA-256 hashes must match after checkout on any OS)
+*.csv -text
+*.json -text
+*.jsonl -text
+*.txt -text
+*.png binary
+*.ttf binary
