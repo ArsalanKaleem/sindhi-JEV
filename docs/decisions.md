@@ -124,3 +124,11 @@ Rule of 2026-11-22 applied to `runs/main_v2/last.pt` (step 60,000): val_font_har
 v1 stays in the paper as the "5 fonts, no page realism" comparison. Ablations run on the v2 recipe
 (configs/ablations_v1.json -> model_v2.json), started 2026-11-23 as parts A and B in parallel.
 GPU total ~18.1 / 60 (v1 incl. debug ~8.2, v2 ~9.8, start-up overheads included approximately).
+
+## 2026-11-23: v2 synthetic results (all sets)
+
+`results/synth_main_v2.md`. On the untouched test fonts (Harmattan, Noto Kufi), which played no part in choosing v2:
+test_font AUROC 0.9974 (v1 0.967), letter F1 0.942 (v1 0.812); test_font_hard AUROC 0.9985 (v1 0.975), letter F1 0.933
+(v1 0.795). v2 beats the text-only checker on every synthetic set (all paired-bootstrap CIs above 0). Weakest groups
+on unseen fonts: gaf_digraph, tah, jeem_digraph (AUROC 0.992-0.997). Synthetic sets are now near ceiling; the open
+question is real scans (final evaluation).
