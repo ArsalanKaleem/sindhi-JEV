@@ -1,0 +1,17 @@
+{
+  "spans": "data/text/spans.jsonl",
+  "confusion_set": "data/confusion_set.json",
+  "scan_fonts_train": ["Amiri-Regular.ttf", "Lateef-Regular.ttf", "NotoNaskhArabic.ttf",
+                       "NotoSansArabic.ttf", "ScheherazadeNew-Regular.ttf"],
+  "scan_fonts_heldout": ["Harmattan-Regular.ttf", "NotoKufiArabic.ttf"],
+  "excluded_fonts": {"NotoNastaliqUrdu.ttf": "no ڪ, no ۽", "MarkaziText.ttf": "no Sindhi letters",
+                     "Vazirmatn.ttf": "no Sindhi letters"},
+  "candidate_font": "NotoNaskhArabic.ttf",
+  "candidate_size": 48,
+  "scan_size": [28, 60],
+  "max_words": 4,
+  "mix": {"positive": 0.5, "confusion": 0.3, "random_sub": 0.1, "deletion": 0.05, "insertion": 0.05},
+  "max_severity": 0.8,
+  "fixed_sets": {"val": 4000, "test_iid": 4000, "test_font": 4000},
+  "seed": 1234
+}
