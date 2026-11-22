@@ -93,3 +93,10 @@ Practice set (synthetic scans, not real): `?data=../data/demo_real`.
 - Rare groups have few test negatives (e.g. tah, sad, gaf_digraph < 10 per set);
   a per-group balanced set is needed before reporting per-group numbers.
 - Text is Wikipedia only (encyclopedic register, 2023 dump).
+
+## Licence
+
+- **Code** (src/, scripts/, tools/, kaggle/, tests/): [Apache License 2.0](LICENSE).
+- **Fonts** (fonts/): each under the SIL Open Font License; licence texts are next to the fonts (`fonts/OFL-*.txt`).
+- **Data**: see [docs/DATA_LICENSES.md](docs/DATA_LICENSES.md). Real scan images are not in this repository;
+  each real source's terms are in `data/real/sources.csv`.
