@@ -14,8 +14,10 @@ Design decisions: `docs/decisions.md`.
 |---|---|---|
 | 0 Novelty audit | approved 2026-11-17 | 0 |
 | 1 Data (synthetic) | built with confusion set **v1** (native-reviewed 2026-11-17) | 0 |
-| 2 Real test set | 471 word crops + 80 full-line crops (v2 cutter), 5 Tesseract engines run; **awaiting labels** | 0 |
-| 3 Model | code written and CPU-tested (`docs/phase3_plan_and_research.md`); **waiting for the Kaggle speed test** | 0 |
+| 2 Real test set | **frozen**: 336 word crops + 74 lines labelled; 5 Tesseract + 2 EasyOCR engines (2,352 + 530 outputs) | 0 |
+| 3 Model v1 | trained 60k steps; gate passed (val_hard +0.151 over text-only, CI above 0); weak on unseen fonts | ~8.2 |
+| 3 Model v2 | 9 fonts + page realism; unseen-font val 0.9997 vs v1 0.9834 at step 51k; finishing to 60k ([#1](https://github.com/ArsalanKaleem/sindhi-JEV/issues/1)) | ~8.4 |
+| Next | ablations, Jev baseline, final real evaluation, paper, pip tool: see the [Roadmap](https://github.com/ArsalanKaleem/sindhi-JEV/issues/14) | ~16.6 / 60 used |
 
 ## Setup (Windows or Linux, Python 3.12)
 
