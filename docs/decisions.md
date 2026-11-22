@@ -115,3 +115,12 @@ val_font_hard AUROC at step 51,412: **0.9997** (letter F1 0.989) vs v1 final 0.9
 vs 0.988. Per the 2026-11-22 rule the adoption check uses last.pt at step 60,000 -> one resume session (~1.4 h).
 Ablations shortened to 16k steps each (6 runs ~15 GPU h at v2 speed), same budget for every variant.
 GPU total ~16.6 / 60.
+
+## 2026-11-23: v2 adopted
+
+v2 finished: session 2 resumed at 51,412 and reached 60,000 (1.43 GPU h; v2 total 9.74 GPU h).
+Rule of 2026-11-22 applied to `runs/main_v2/last.pt` (step 60,000): val_font_hard AUROC **0.9997 > 0.9834** (v1)
+-> **v2 is the reported model.** val_font_hard letter F1 0.989 (v1 0.884); val_font AUROC 0.9998 (v1 0.988).
+v1 stays in the paper as the "5 fonts, no page realism" comparison. Ablations run on the v2 recipe
+(configs/ablations_v1.json -> model_v2.json), started 2026-11-23 as parts A and B in parallel.
+GPU total ~18.1 / 60 (v1 incl. debug ~8.2, v2 ~9.8, start-up overheads included approximately).
