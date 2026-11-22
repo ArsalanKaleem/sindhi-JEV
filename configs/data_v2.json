@@ -1,0 +1,51 @@
+{
+ "spans": "data/text/spans.jsonl",
+ "confusion_set": "data/confusion_set.json",
+ "scan_fonts_train": [
+  "Amiri-Regular.ttf",
+  "Lateef-Regular.ttf",
+  "NotoNaskhArabic.ttf",
+  "NotoSansArabic.ttf",
+  "ScheherazadeNew-Regular.ttf"
+ ],
+ "scan_fonts_heldout": [
+  "Harmattan-Regular.ttf",
+  "NotoKufiArabic.ttf"
+ ],
+ "excluded_fonts": {
+  "NotoNastaliqUrdu.ttf": "no ڪ, no ۽",
+  "MarkaziText.ttf": "no Sindhi letters",
+  "Vazirmatn.ttf": "no Sindhi letters"
+ },
+ "candidate_font": "NotoNaskhArabic.ttf",
+ "candidate_size": 48,
+ "scan_size": [
+  28,
+  60
+ ],
+ "max_words": 4,
+ "mix": {
+  "positive": 0.5,
+  "confusion": 0.2,
+  "realword": 0.15,
+  "random_sub": 0.07,
+  "deletion": 0.04,
+  "insertion": 0.04
+ },
+ "max_severity": 0.8,
+ "fixed_sets": {
+  "val": 4000,
+  "test_iid": 4000,
+  "test_font": 4000,
+  "val_hard": 2000,
+  "test_hard": 2000,
+  "test_font_hard": 2000
+ },
+ "seed": 1234,
+ "lexicon": "data/text/lexicon_train.json",
+ "notes": [
+  "v2 = v1 + 'realword' dot swaps (the changed word is itself a dictionary word, so a spell checker cannot",
+  "flag it). Reason: on v1 sets the text-only checker already reaches AUROC 0.96, so v1 negatives mostly test spelling.",
+  "The v1 fixed sets stay as they are; the hard sets are new. Training uses the v2 mix."
+ ]
+}
