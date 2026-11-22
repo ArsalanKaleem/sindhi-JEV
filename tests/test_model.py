@@ -1,5 +1,4 @@
 """Phase 3 code: metrics vs sklearn, model shapes for every ablation, batching, real-word corruption."""
-import json
 import random
 import sys
 from pathlib import Path
@@ -11,9 +10,29 @@ sys.path.insert(0, str(ROOT / "src"))
 torch = pytest.importorskip("torch")
 from sindhijev.alphabet import units  # noqa: E402
 from sindhijev.corrupt import load_groups, make_candidate, realword_options  # noqa: E402
-from sindhijev.data import Manifest, collate  # noqa: E402
+from sindhijev.data import collate, to_example  # noqa: E402
+from sindhijev.degrade import degrade  # noqa: E402
+from sindhijev.render import Renderer  # noqa: E402
 from sindhijev.metrics import auprc, auroc, char_metrics, routing  # noqa: E402
 from sindhijev.model import Verifier, n_params  # noqa: E402
+
+
+TEXTS = ["ٻار ڀاڄي ڏٺي", "ڪتاب ۽ گهر", "سنڌ جي تاريخ", "جهڙو", "پاڻي", "ڍڳو ڙيڻ", "ڦٽو ڇڏيو", "ڃڱڻ"]
+
+
+def make_batch(cfg, n):
+    """Small in-memory examples (no generated data needed, so this also runs in CI)."""
+    scan_r = Renderer(ROOT / "fonts" / "Lateef-Regular.ttf", size=40)
+    cand_r = Renderer(ROOT / "fonts" / "NotoNaskhArabic.ttf", size=48)
+    groups, rng = load_groups(), random.Random(0)
+    out = []
+    for i in range(n):
+        text = TEXTS[i % len(TEXTS)]
+        c = make_candidate(text, groups, rng, mode="confusion" if i % 2 else "positive")
+        scan, _ = degrade(scan_r.render(text, pad=6)[0], rng)
+        cand_img, char_x = cand_r.render(c["cand"])
+        out.append(to_example(scan, cand_img, c["cand"], char_x, int(any(c["labels"])), c["labels"], cfg))
+    return collate(out)
 
 
 def test_metrics_match_sklearn():
@@ -39,8 +58,7 @@ def test_routing_and_char_metrics():
                                    {"char_head": False}, {"use_scan": False, "use_render": False, "char_align": False}])
 def test_model_shapes_all_ablations(flags):
     m = Verifier(flags)
-    ds = Manifest(ROOT / "data" / "synth" / "val", m.cfg, limit=4)
-    b = collate([ds[i] for i in range(4)])
+    b = make_batch(m.cfg, 4)
     out = m(b)
     assert out["seq_logit"].shape == (4,)
     if m.cfg["char_head"]:
@@ -53,8 +71,7 @@ def test_model_shapes_all_ablations(flags):
 
 def test_char_x_inside_padded_width():
     m = Verifier()
-    ds = Manifest(ROOT / "data" / "synth" / "val", m.cfg, limit=8)
-    b = collate([ds[i] for i in range(8)])
+    b = make_batch(m.cfg, 8)
     cx = b["char_x"][b["char_mask"]]
     frac_w = (b["cand_w"].float() / b["cand"].shape[-1])
     assert (cx >= 0).all() and (cx[:, 1] <= frac_w.max() + 1e-6).all()

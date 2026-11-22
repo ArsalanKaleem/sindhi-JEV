@@ -1,5 +1,7 @@
 # Sindhi-Jev: a small dot-aware verifier for Sindhi OCR
 
+[![tests](https://github.com/ArsalanKaleem/sindhi-JEV/actions/workflows/tests.yml/badge.svg)](https://github.com/ArsalanKaleem/sindhi-JEV/actions/workflows/tests.yml)
+
 Checks whether an OCR candidate for a Sindhi word/line crop is correct, and
 which character's dots disagree. See `docs/phase0_audit.md` for prior work
 (MiniCPM-OCR Jev, OCR-EDR) and the claim being tested.
