@@ -1,0 +1,13 @@
+crop_id,engine,cand_text,seq_conf,char_conf_json,runtime_s
+test_iid_000000,tess_snd,تباھ ڪيو,0.84,{},0
+test_iid_000000,tess_urd,تباھ ڪيو,0.76,{},0
+test_iid_000001,tess_snd,رنگين ننگن جي چٽسالي,0.42,{},0
+test_iid_000001,tess_urd,رنگين ننگن جي چٽسالي,0.26,{},0
+test_iid_000002,tess_snd,ڊماغ,0.51,{},0
+test_iid_000002,tess_urd,دماغ,0.4,{},0
+test_iid_000003,tess_snd,خود ڪبلامي,0.78,{},0
+test_iid_000003,tess_urd,خود ڪلامي,0.3,{},0
+test_iid_000004,tess_snd,وارى ذور,0.48,{},0
+test_iid_000004,tess_urd,واري دور,0.58,{},0
+test_iid_000005,tess_snd,اڀريو,0.91,{},0
+test_iid_000005,tess_urd,اڀريو,0.5,{},0

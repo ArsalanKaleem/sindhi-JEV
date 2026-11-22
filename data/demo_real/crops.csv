@@ -1,0 +1,7 @@
+crop_id,source_id,page,x0,y0,x1,y1,stratum,image_path
+test_iid_000000,demo,,,,,,printed,crops/test_iid_000000.png
+test_iid_000001,demo,,,,,,printed,crops/test_iid_000001.png
+test_iid_000002,demo,,,,,,printed,crops/test_iid_000002.png
+test_iid_000003,demo,,,,,,printed,crops/test_iid_000003.png
+test_iid_000004,demo,,,,,,printed,crops/test_iid_000004.png
+test_iid_000005,demo,,,,,,printed,crops/test_iid_000005.png
