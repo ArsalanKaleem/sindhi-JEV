@@ -107,3 +107,11 @@ Data v3: 9 training fonts (+ IBM Plex Sans Arabic, Kufam, Jomhuria, Katibeh; all
 Unseen-font validation font: Mirza (Naskh); sets val_font / val_font_hard (2,000 each).
 **v1 on val_font_hard: AUROC 0.9834** (char F1 0.884). Rule fixed before v2 training: v2 becomes the reported
 model only if its val_font_hard AUROC (last.pt) is higher than 0.9834. Test sets and the real set are not used.
+
+## 2026-11-23: v2 session 1
+
+v2 (data_v3, model_v2) session 1: 8.31 GPU h, stopped at step 51,412 of 60,000 (data generation slower: ~0.56 s/step).
+val_font_hard AUROC at step 51,412: **0.9997** (letter F1 0.989) vs v1 final 0.9834 (letter F1 0.884); val_font 0.9998
+vs 0.988. Per the 2026-11-22 rule the adoption check uses last.pt at step 60,000 -> one resume session (~1.4 h).
+Ablations shortened to 16k steps each (6 runs ~15 GPU h at v2 speed), same budget for every variant.
+GPU total ~16.6 / 60.

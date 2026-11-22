@@ -1,11 +1,11 @@
 {
  "notes": [
-  "Ablations (approved 2026-11-20). Every run uses the SAME short budget: 10 epochs x 2000 steps = 20k steps",
-  "(~2.45 GPU h on a T4), so they are compared with abl_ref (full model, same budget), not with the 60k main run.",
+  "Ablations (approved 2026-11-20). Every run uses the SAME short budget: 8 epochs x 2000 steps = 16k steps",
+  "(~2.5 GPU h each at v2 data speed ~0.56 s/step; 6 runs ~15 h), compared with abl_ref (full model, same budget), not with the 60k main run.",
   "Each run is evaluated once on synthetic sets and once in the final real evaluation; none is selected for use.",
   "model_config = the recipe of the reported model: model_v2.json if v2 wins on val_font_hard (rule of 2026-11-22), else set back to model_v1.json before running."
  ],
- "epochs": 10,
+ "epochs": 8,
  "steps_per_epoch": 2000,
  "runs": {
   "abl_ref": {
