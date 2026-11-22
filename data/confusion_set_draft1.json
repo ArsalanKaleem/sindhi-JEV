@@ -1,0 +1,478 @@
+{
+ "version": "draft-1",
+ "status": "NOT native-reviewed. Dot descriptions are Claude's reading of Unicode names/charts; every row needs the native speaker's check.",
+ "notes": [
+  "kind=dot: same skeleton (rasm), differ only in dot count/position. Main target of the paper.",
+  "kind=mark: differ by a non-dot mark (small tah, hamza, madda, stroke).",
+  "kind=digraph: letter vs aspirated digraph (extra heh).",
+  "kind=encoding: same sound/letter typed with a different code point; often visually different or identical depending on font and position. Reported separately, not in the main dot metric.",
+  "positions=joined means only when the letter joins to the next letter (initial/medial form), where e.g. ن and ي share the beh tooth."
+ ],
+ "groups": [
+  {
+   "id": "beh",
+   "kind": "dot",
+   "skeleton": "dotless beh tooth/bowl",
+   "positions": "all",
+   "weight": 3.0,
+   "members": [
+    {
+     "c": "ب",
+     "dots": "1 below"
+    },
+    {
+     "c": "ٻ",
+     "dots": "2 below, vertical"
+    },
+    {
+     "c": "ڀ",
+     "dots": "4 below (2x2)"
+    },
+    {
+     "c": "پ",
+     "dots": "3 below"
+    },
+    {
+     "c": "ت",
+     "dots": "2 above, horizontal"
+    },
+    {
+     "c": "ٿ",
+     "dots": "4 above (2x2)"
+    },
+    {
+     "c": "ٽ",
+     "dots": "3 above, pointing down (Unicode name)"
+    },
+    {
+     "c": "ٺ",
+     "dots": "2 above, vertical"
+    },
+    {
+     "c": "ث",
+     "dots": "3 above"
+    }
+   ]
+  },
+  {
+   "id": "beh_joined",
+   "kind": "dot",
+   "skeleton": "tooth in initial/medial form",
+   "positions": "joined",
+   "weight": 1.0,
+   "members": [
+    {
+     "c": "ب",
+     "dots": "1 below"
+    },
+    {
+     "c": "ت",
+     "dots": "2 above"
+    },
+    {
+     "c": "ن",
+     "dots": "1 above"
+    },
+    {
+     "c": "ڻ",
+     "dots": "none; small tah above"
+    },
+    {
+     "c": "ي",
+     "dots": "2 below"
+    }
+   ]
+  },
+  {
+   "id": "jeem",
+   "kind": "dot",
+   "skeleton": "hah",
+   "positions": "all",
+   "weight": 3.0,
+   "members": [
+    {
+     "c": "ج",
+     "dots": "1 below/inside"
+    },
+    {
+     "c": "ڄ",
+     "dots": "2 below, vertical"
+    },
+    {
+     "c": "ڃ",
+     "dots": "2 below, horizontal"
+    },
+    {
+     "c": "چ",
+     "dots": "3 below"
+    },
+    {
+     "c": "ڇ",
+     "dots": "4 below (2x2)"
+    },
+    {
+     "c": "ح",
+     "dots": "none"
+    },
+    {
+     "c": "خ",
+     "dots": "1 above"
+    }
+   ]
+  },
+  {
+   "id": "jeem_digraph",
+   "kind": "digraph",
+   "skeleton": "hah (+ heh)",
+   "positions": "all",
+   "weight": 0.7,
+   "members": [
+    {
+     "c": "ج",
+     "dots": "1 below"
+    },
+    {
+     "c": "جه",
+     "dots": "1 below + heh"
+    },
+    {
+     "c": "ڄ",
+     "dots": "2 below, vertical"
+    }
+   ]
+  },
+  {
+   "id": "dal",
+   "kind": "dot",
+   "skeleton": "dal",
+   "positions": "all",
+   "weight": 3.0,
+   "members": [
+    {
+     "c": "د",
+     "dots": "none"
+    },
+    {
+     "c": "ڌ",
+     "dots": "2 above, horizontal"
+    },
+    {
+     "c": "ڏ",
+     "dots": "3 above, pointing down (Unicode name)"
+    },
+    {
+     "c": "ڊ",
+     "dots": "1 below"
+    },
+    {
+     "c": "ڍ",
+     "dots": "2 below"
+    },
+    {
+     "c": "ذ",
+     "dots": "1 above"
+    }
+   ]
+  },
+  {
+   "id": "reh",
+   "kind": "dot",
+   "skeleton": "reh",
+   "positions": "all",
+   "weight": 2.0,
+   "members": [
+    {
+     "c": "ر",
+     "dots": "none"
+    },
+    {
+     "c": "ڙ",
+     "dots": "4 above (Unicode name)"
+    },
+    {
+     "c": "ز",
+     "dots": "1 above"
+    }
+   ]
+  },
+  {
+   "id": "seen",
+   "kind": "dot",
+   "skeleton": "seen",
+   "positions": "all",
+   "weight": 1.0,
+   "members": [
+    {
+     "c": "س",
+     "dots": "none"
+    },
+    {
+     "c": "ش",
+     "dots": "3 above"
+    }
+   ]
+  },
+  {
+   "id": "sad",
+   "kind": "dot",
+   "skeleton": "sad",
+   "positions": "all",
+   "weight": 0.5,
+   "members": [
+    {
+     "c": "ص",
+     "dots": "none"
+    },
+    {
+     "c": "ض",
+     "dots": "1 above"
+    }
+   ]
+  },
+  {
+   "id": "tah",
+   "kind": "dot",
+   "skeleton": "tah",
+   "positions": "all",
+   "weight": 0.5,
+   "members": [
+    {
+     "c": "ط",
+     "dots": "none"
+    },
+    {
+     "c": "ظ",
+     "dots": "1 above"
+    }
+   ]
+  },
+  {
+   "id": "ain",
+   "kind": "dot",
+   "skeleton": "ain",
+   "positions": "all",
+   "weight": 1.0,
+   "members": [
+    {
+     "c": "ع",
+     "dots": "none"
+    },
+    {
+     "c": "غ",
+     "dots": "1 above"
+    }
+   ]
+  },
+  {
+   "id": "feh",
+   "kind": "dot",
+   "skeleton": "feh/qaf loop",
+   "positions": "all",
+   "weight": 2.0,
+   "members": [
+    {
+     "c": "ف",
+     "dots": "1 above"
+    },
+    {
+     "c": "ڦ",
+     "dots": "4 above (2x2)"
+    },
+    {
+     "c": "ق",
+     "dots": "2 above (final bowl differs)"
+    }
+   ]
+  },
+  {
+   "id": "gaf",
+   "kind": "dot",
+   "skeleton": "gaf",
+   "positions": "all",
+   "weight": 2.0,
+   "members": [
+    {
+     "c": "گ",
+     "dots": "none"
+    },
+    {
+     "c": "ڳ",
+     "dots": "2 below, vertical"
+    },
+    {
+     "c": "ڱ",
+     "dots": "2 above (Unicode chart; please check)"
+    }
+   ]
+  },
+  {
+   "id": "gaf_digraph",
+   "kind": "digraph",
+   "skeleton": "gaf (+ heh)",
+   "positions": "all",
+   "weight": 0.5,
+   "members": [
+    {
+     "c": "گ",
+     "dots": "none"
+    },
+    {
+     "c": "گه",
+     "dots": "gaf + heh"
+    },
+    {
+     "c": "ڳ",
+     "dots": "2 below"
+    }
+   ]
+  },
+  {
+   "id": "kaf_gaf_stroke",
+   "kind": "mark",
+   "skeleton": "keheh",
+   "positions": "all",
+   "weight": 0.7,
+   "members": [
+    {
+     "c": "ک",
+     "dots": "none (keheh)"
+    },
+    {
+     "c": "گ",
+     "dots": "none; extra stroke"
+    }
+   ]
+  },
+  {
+   "id": "noon",
+   "kind": "mark",
+   "skeleton": "noon bowl",
+   "positions": "all",
+   "weight": 1.5,
+   "members": [
+    {
+     "c": "ن",
+     "dots": "1 above"
+    },
+    {
+     "c": "ڻ",
+     "dots": "none; small tah above"
+    }
+   ]
+  },
+  {
+   "id": "yeh_dots",
+   "kind": "dot",
+   "skeleton": "yeh",
+   "positions": "all",
+   "weight": 0.5,
+   "members": [
+    {
+     "c": "ي",
+     "dots": "2 below"
+    },
+    {
+     "c": "ى",
+     "dots": "none"
+    }
+   ]
+  },
+  {
+   "id": "alef_marks",
+   "kind": "mark",
+   "skeleton": "alef",
+   "positions": "all",
+   "weight": 0.3,
+   "members": [
+    {
+     "c": "ا",
+     "dots": "none"
+    },
+    {
+     "c": "آ",
+     "dots": "madda"
+    },
+    {
+     "c": "أ",
+     "dots": "hamza above"
+    }
+   ]
+  },
+  {
+   "id": "waw_marks",
+   "kind": "mark",
+   "skeleton": "waw",
+   "positions": "all",
+   "weight": 0.2,
+   "members": [
+    {
+     "c": "و",
+     "dots": "none"
+    },
+    {
+     "c": "ؤ",
+     "dots": "hamza above"
+    }
+   ]
+  },
+  {
+   "id": "heh_enc",
+   "kind": "encoding",
+   "skeleton": "heh",
+   "positions": "all",
+   "weight": 0.0,
+   "members": [
+    {
+     "c": "ه",
+     "dots": "U+0647 heh"
+    },
+    {
+     "c": "ھ",
+     "dots": "U+06BE heh doachashmee"
+    },
+    {
+     "c": "ہ",
+     "dots": "U+06C1 heh goal"
+    }
+   ]
+  },
+  {
+   "id": "yeh_enc",
+   "kind": "encoding",
+   "skeleton": "yeh",
+   "positions": "all",
+   "weight": 0.0,
+   "members": [
+    {
+     "c": "ي",
+     "dots": "U+064A yeh"
+    },
+    {
+     "c": "ی",
+     "dots": "U+06CC farsi yeh (no dots when final)"
+    }
+   ]
+  },
+  {
+   "id": "kaf_enc",
+   "kind": "encoding",
+   "skeleton": "kaf",
+   "positions": "all",
+   "weight": 0.0,
+   "members": [
+    {
+     "c": "ڪ",
+     "dots": "U+06AA swash kaf"
+    },
+    {
+     "c": "ک",
+     "dots": "U+06A9 keheh"
+    },
+    {
+     "c": "ك",
+     "dots": "U+0643 arabic kaf"
+    }
+   ]
+  }
+ ]
+}
