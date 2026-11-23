@@ -26,6 +26,21 @@ def norm(s):
                     .translate(PUNCT_MAP).split())
 
 
+_FOLD = None
+
+
+def fold_encoding(s):
+    """norm() + encoding variants (confusion-set groups of kind 'encoding') -> canonical Sindhi form, bidi marks dropped.
+    Used only to report inter-pass agreement net of keyboard/code-point differences (labelling rule 5)."""
+    global _FOLD
+    if _FOLD is None:
+        cs = json.loads((ROOT / "data" / "confusion_set.json").read_text(encoding="utf-8"))
+        _FOLD = {ord(m["c"]): g["members"][0]["c"] for g in cs["groups"] if g["kind"] == "encoding"
+                 for m in g["members"][1:] if len(m["c"]) == 1}
+        _FOLD.update({0x200E: None, 0x200F: None, 0x061C: None})  # LRM, RLM, Arabic letter mark
+    return norm(norm(s).translate(_FOLD))
+
+
 def read_csv(path):
     with open(path, encoding="utf-8-sig", newline="") as f:
         return list(csv.DictReader(f))
@@ -109,8 +124,11 @@ def cer(ref, hyp):
     return sum(op != "eq" for op, _, _ in levenshtein_ops(ref, hyp)) / len(ref)
 
 
-def agreement(cands, pass1, pass2, pair_groups=None):
-    """Inter-pass consistency on the crops labelled in both passes."""
+def agreement(cands, pass1, pass2, pair_groups=None, fold=False):
+    """Inter-pass consistency on the crops labelled in both passes. fold=True compares golds after fold_encoding()."""
+    if fold:
+        pass1 = [{**g, "gold_text": fold_encoding(g["gold_text"])} for g in pass1]
+        pass2 = [{**g, "gold_text": fold_encoding(g["gold_text"])} for g in pass2]
     p1 = {g["crop_id"]: g for g in pass1}
     p2 = {g["crop_id"]: g for g in pass2}
     both = sorted(set(p1) & set(p2))

@@ -115,3 +115,9 @@ def test_latin_punctuation_equals_arabic_and_overrides_can_be_ignored():
     assert derive_all(cands, gold)[0]["overridden"] == "Y"
     r = derive_all(cands, gold, ignore_overrides=True)[0]
     assert r["overridden"] == "N" and r["seq_label"] in (0, "0")
+
+
+def test_fold_encoding_variants_and_bidi_marks():
+    from sindhijev.realset import fold_encoding
+    assert fold_encoding("ڊگري‏ ۽ ڊیوٽي ھا") == fold_encoding("ڊگري ۽ ڊيوٽي ها") == "ڊگري ۽ ڊيوٽي ها"
+    assert fold_encoding("ٿو") != fold_encoding("ڏو")  # dot differences are never folded
