@@ -166,3 +166,15 @@ Of 12 folded disagreements, 7 are harakat or punctuation only; 5 differ in lette
 bcp1873_p0012_v2w06, dharejo2002_p0045_v2w12, bcp1873_p0016_v2w04, lughat1960_p0239_v2w03).
 **Adjudication (author, 2026-11-24): pass 1 kept for all.** gold.csv unchanged, real set stays frozen.
 Paper reports the folded numbers as label consistency and the raw ones in the appendix.
+
+## 2026-11-24: Jev zero-shot baseline setup (#3)
+
+MiniCPM-OCR Jev (`openbmb/MiniCPM-OCR-Jev`, Apache-2.0) is run **as released, no fine-tuning**, through its own SDK
+(transformers backend, score-only endpoint `/v1/score`). Facts from OpenBMB's docs and code (read 2026-11-24):
+- Jev's render+score path renders with Chromium using CJK fonts only and no RTL handling, so we use the
+  **score-only path and supply our HarfBuzz render of the candidate** (the same render our model sees).
+- Default dtype is bf16, which a T4 lacks. The notebook tries float16, then float32, and keeps the first dtype whose
+  scores on OpenBMB's bundled examples are within 0.02 of their reference probabilities (recorded in run_info.json).
+- Output `prob_1` = P(correct); error score = 1 - prob_1. Failed items are counted and scored 0.5, never dropped.
+Scope now: synthetic test_hard + test_font_hard (`kaggle/jev.ipynb`, `scripts/jev/`). Real candidates are scored only
+in the final real evaluation (#5). Budget <= 2 GPU h; DEBUG run first to measure speed.
