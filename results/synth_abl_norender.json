@@ -1,0 +1,1227 @@
+{
+ "ckpt": "runs/abl_norender/last.pt",
+ "step": 16000,
+ "model_cfg": {
+  "img_height": 48,
+  "max_width": 1024,
+  "max_chars": 96,
+  "d_model": 256,
+  "n_heads": 8,
+  "n_layers": 4,
+  "ffn": 1024,
+  "dropout": 0.1,
+  "cnn_channels": [
+   32,
+   64,
+   128,
+   256
+  ],
+  "use_scan": true,
+  "use_render": false,
+  "char_align": false,
+  "char_head": true,
+  "char_loss_weight": 1.0,
+  "seq_pos_weight": 1.0,
+  "char_pos_weight": 5.0
+ },
+ "char_threshold_from_val": 0.746,
+ "val": {
+  "n": 4000,
+  "n_wrong": 1989,
+  "auroc": 0.9943155780462359,
+  "auprc": 0.9954310346650739,
+  "base_rate": 0.49725,
+  "route@10": {
+   "recall": 0.20110608345902464,
+   "precision": 1.0,
+   "residual_error": 0.4413888888888889
+  },
+  "route@20": {
+   "recall": 0.4022121669180493,
+   "precision": 1.0,
+   "residual_error": 0.3715625
+  },
+  "route@30": {
+   "recall": 0.6033182503770739,
+   "precision": 1.0,
+   "residual_error": 0.2817857142857143
+  },
+  "char_precision": 0.9853398489560196,
+  "char_recall": 0.944633730834753,
+  "char_f1": 0.9645575125027179,
+  "top1_loc": 0.9718451483157365,
+  "n_loc": 1989,
+  "by_mode_vs_pos": {
+   "confusion": 0.9998328343049399,
+   "deletion": 0.9600763509033649,
+   "insertion": 0.9895363238039837,
+   "random_sub": 0.9970091326969958
+  },
+  "by_group_vs_pos": {
+   "ain": 0.9999476563113403,
+   "alef_marks": 1.0,
+   "beh": 0.999960789136452,
+   "beh_joined": 0.9995154853434316,
+   "dal": 0.9999513951462445,
+   "feh": 0.9999773970435333,
+   "gaf": 0.9999668489971821,
+   "gaf_digraph": 0.9998342449859108,
+   "jeem": 0.9996684899718217,
+   "jeem_digraph": 0.9987825579999657,
+   "kaf_gaf_stroke": 0.9997256468732317,
+   "noon": 0.9999052828490919,
+   "reh": 0.9998868293352081,
+   "sad": 1.0,
+   "seen": 0.9999924656811777,
+   "tah": 1.0,
+   "waw_marks": 1.0,
+   "yeh_dots": 0.9999953088203559
+  },
+  "by_font": {
+   "Amiri-Regular.ttf": {
+    "n": 806,
+    "n_wrong": 414,
+    "auroc": 0.9911268855368234,
+    "auprc": 0.9935135466377503,
+    "base_rate": 0.5136476426799007,
+    "route@10": {
+     "recall": 0.1956521739130435,
+     "precision": 1.0,
+     "residual_error": 0.4593103448275862
+    },
+    "route@20": {
+     "recall": 0.3888888888888889,
+     "precision": 1.0,
+     "residual_error": 0.3922480620155039
+    },
+    "route@30": {
+     "recall": 0.5845410628019324,
+     "precision": 1.0,
+     "residual_error": 0.3049645390070922
+    },
+    "char_precision": 0.9789473684210527,
+    "char_recall": 0.9412955465587044,
+    "char_f1": 0.9597523219814241,
+    "top1_loc": 0.9685990338164251,
+    "n_loc": 414
+   },
+   "Lateef-Regular.ttf": {
+    "n": 806,
+    "n_wrong": 378,
+    "auroc": 0.9946471838995203,
+    "auprc": 0.9951168716951618,
+    "base_rate": 0.46898263027295284,
+    "route@10": {
+     "recall": 0.21428571428571427,
+     "precision": 1.0,
+     "residual_error": 0.4096551724137931
+    },
+    "route@20": {
+     "recall": 0.42592592592592593,
+     "precision": 1.0,
+     "residual_error": 0.3364341085271318
+    },
+    "route@30": {
+     "recall": 0.6402116402116402,
+     "precision": 1.0,
+     "residual_error": 0.24113475177304963
+    },
+    "char_precision": 0.9812646370023419,
+    "char_recall": 0.9311111111111111,
+    "char_f1": 0.9555302166476625,
+    "top1_loc": 0.9629629629629629,
+    "n_loc": 378
+   },
+   "NotoNaskhArabic.ttf": {
+    "n": 773,
+    "n_wrong": 386,
+    "auroc": 0.9961909734773935,
+    "auprc": 0.9966330323613483,
+    "base_rate": 0.49935316946959896,
+    "route@10": {
+     "recall": 0.19948186528497408,
+     "precision": 1.0,
+     "residual_error": 0.44396551724137934
+    },
+    "route@20": {
+     "recall": 0.4015544041450777,
+     "precision": 1.0,
+     "residual_error": 0.3737864077669903
+    },
+    "route@30": {
+     "recall": 0.6010362694300518,
+     "precision": 1.0,
+     "residual_error": 0.2846580406654344
+    },
+    "char_precision": 0.9814814814814815,
+    "char_recall": 0.9422222222222222,
+    "char_f1": 0.9614512471655329,
+    "top1_loc": 0.9740932642487047,
+    "n_loc": 386
+   },
+   "NotoSansArabic.ttf": {
+    "n": 790,
+    "n_wrong": 398,
+    "auroc": 0.9954748230950672,
+    "auprc": 0.9967589943696439,
+    "base_rate": 0.5037974683544304,
+    "route@10": {
+     "recall": 0.1984924623115578,
+     "precision": 1.0,
+     "residual_error": 0.44866385372714485
+    },
+    "route@20": {
+     "recall": 0.3969849246231156,
+     "precision": 1.0,
+     "residual_error": 0.379746835443038
+    },
+    "route@30": {
+     "recall": 0.5954773869346733,
+     "precision": 1.0,
+     "residual_error": 0.2911392405063291
+    },
+    "char_precision": 0.9935760171306209,
+    "char_recall": 0.9646569646569647,
+    "char_f1": 0.9789029535864979,
+    "top1_loc": 0.9798994974874372,
+    "n_loc": 398
+   },
+   "ScheherazadeNew-Regular.ttf": {
+    "n": 825,
+    "n_wrong": 413,
+    "auroc": 0.9938526998754085,
+    "auprc": 0.9951244790261122,
+    "base_rate": 0.5006060606060606,
+    "route@10": {
+     "recall": 0.19854721549636803,
+     "precision": 1.0,
+     "residual_error": 0.44549125168236875
+    },
+    "route@20": {
+     "recall": 0.39951573849878935,
+     "precision": 1.0,
+     "residual_error": 0.37575757575757573
+    },
+    "route@30": {
+     "recall": 0.6004842615012107,
+     "precision": 1.0,
+     "residual_error": 0.28596187175043325
+    },
+    "char_precision": 0.9911111111111112,
+    "char_recall": 0.9429175475687104,
+    "char_f1": 0.9664138678223186,
+    "top1_loc": 0.9733656174334141,
+    "n_loc": 413
+   }
+  },
+  "vs_text": {
+   "delta": 0.04101474069590605,
+   "ci": [
+    0.03504275876068974,
+    0.04759622259436325
+   ],
+   "p_a_not_better": 0.0
+  },
+  "text_auroc": 0.9533008373503299
+ },
+ "val_hard": {
+  "n": 2000,
+  "n_wrong": 1000,
+  "auroc": 0.999402,
+  "auprc": 0.9993928065560062,
+  "base_rate": 0.5,
+  "route@10": {
+   "recall": 0.2,
+   "precision": 1.0,
+   "residual_error": 0.4444444444444444
+  },
+  "route@20": {
+   "recall": 0.4,
+   "precision": 1.0,
+   "residual_error": 0.375
+  },
+  "route@30": {
+   "recall": 0.6,
+   "precision": 1.0,
+   "residual_error": 0.2857142857142857
+  },
+  "char_precision": 0.9842053307008884,
+  "char_recall": 0.9871287128712871,
+  "char_f1": 0.9856648541769649,
+  "top1_loc": 0.997,
+  "n_loc": 1000,
+  "by_mode_vs_pos": {
+   "realword": 0.999402
+  },
+  "by_group_vs_pos": {
+   "ain": 0.9970833333333333,
+   "alef_marks": 0.9996933333333333,
+   "beh": 0.9986812227074235,
+   "beh_joined": 0.9999,
+   "dal": 0.9995555555555555,
+   "feh": 0.9996666666666667,
+   "gaf": 0.9998333333333334,
+   "gaf_digraph": 0.9995384615384615,
+   "jeem": 0.999716814159292,
+   "jeem_digraph": 0.9982857142857143,
+   "kaf_gaf_stroke": 0.9995,
+   "noon": 0.9998289473684211,
+   "reh": 0.9996226415094339,
+   "sad": 0.9993333333333333,
+   "seen": 0.9997435897435898,
+   "tah": 0.9993,
+   "waw_marks": 0.9989473684210526
+  },
+  "by_font": {
+   "Amiri-Regular.ttf": {
+    "n": 371,
+    "n_wrong": 208,
+    "auroc": 0.999498584237848,
+    "auprc": 0.9996099176689893,
+    "base_rate": 0.5606469002695418,
+    "route@10": {
+     "recall": 0.1778846153846154,
+     "precision": 1.0,
+     "residual_error": 0.5119760479041916
+    },
+    "route@20": {
+     "recall": 0.3557692307692308,
+     "precision": 1.0,
+     "residual_error": 0.4511784511784512
+    },
+    "route@30": {
+     "recall": 0.5336538461538461,
+     "precision": 1.0,
+     "residual_error": 0.3730769230769231
+    },
+    "char_precision": 0.9858490566037735,
+    "char_recall": 0.9858490566037735,
+    "char_f1": 0.9858490566037735,
+    "top1_loc": 0.9951923076923077,
+    "n_loc": 208
+   },
+   "Lateef-Regular.ttf": {
+    "n": 398,
+    "n_wrong": 195,
+    "auroc": 0.9993684476443098,
+    "auprc": 0.9993695640604794,
+    "base_rate": 0.4899497487437186,
+    "route@10": {
+     "recall": 0.20512820512820512,
+     "precision": 1.0,
+     "residual_error": 0.4329608938547486
+    },
+    "route@20": {
+     "recall": 0.41025641025641024,
+     "precision": 1.0,
+     "residual_error": 0.36163522012578614
+    },
+    "route@30": {
+     "recall": 0.6102564102564103,
+     "precision": 1.0,
+     "residual_error": 0.2724014336917563
+    },
+    "char_precision": 0.9744897959183674,
+    "char_recall": 0.9744897959183674,
+    "char_f1": 0.9744897959183674,
+    "top1_loc": 0.9948717948717949,
+    "n_loc": 195
+   },
+   "NotoNaskhArabic.ttf": {
+    "n": 431,
+    "n_wrong": 213,
+    "auroc": 0.9994185295257785,
+    "auprc": 0.999459064266869,
+    "base_rate": 0.494199535962877,
+    "route@10": {
+     "recall": 0.20187793427230047,
+     "precision": 1.0,
+     "residual_error": 0.4381443298969072
+    },
+    "route@20": {
+     "recall": 0.40375586854460094,
+     "precision": 1.0,
+     "residual_error": 0.3681159420289855
+    },
+    "route@30": {
+     "recall": 0.6056338028169014,
+     "precision": 1.0,
+     "residual_error": 0.2781456953642384
+    },
+    "char_precision": 1.0,
+    "char_recall": 0.9906976744186047,
+    "char_f1": 0.9953271028037384,
+    "top1_loc": 1.0,
+    "n_loc": 213
+   },
+   "NotoSansArabic.ttf": {
+    "n": 389,
+    "n_wrong": 187,
+    "auroc": 0.9988351776354106,
+    "auprc": 0.9985785150990157,
+    "base_rate": 0.480719794344473,
+    "route@10": {
+     "recall": 0.20855614973262032,
+     "precision": 1.0,
+     "residual_error": 0.4228571428571429
+    },
+    "route@20": {
+     "recall": 0.41711229946524064,
+     "precision": 1.0,
+     "residual_error": 0.3504823151125402
+    },
+    "route@30": {
+     "recall": 0.6256684491978609,
+     "precision": 1.0,
+     "residual_error": 0.25735294117647056
+    },
+    "char_precision": 0.9894179894179894,
+    "char_recall": 0.9894179894179894,
+    "char_f1": 0.9894179894179894,
+    "top1_loc": 1.0,
+    "n_loc": 187
+   },
+   "ScheherazadeNew-Regular.ttf": {
+    "n": 411,
+    "n_wrong": 197,
+    "auroc": 0.9999288391289909,
+    "auprc": 0.9999238578680203,
+    "base_rate": 0.4793187347931874,
+    "route@10": {
+     "recall": 0.20812182741116753,
+     "precision": 1.0,
+     "residual_error": 0.42162162162162165
+    },
+    "route@20": {
+     "recall": 0.41624365482233505,
+     "precision": 1.0,
+     "residual_error": 0.3495440729483283
+    },
+    "route@30": {
+     "recall": 0.6243654822335025,
+     "precision": 1.0,
+     "residual_error": 0.2569444444444444
+    },
+    "char_precision": 0.9704433497536946,
+    "char_recall": 0.9949494949494949,
+    "char_f1": 0.9825436408977556,
+    "top1_loc": 0.9949238578680203,
+    "n_loc": 197
+   }
+  },
+  "vs_text": {
+   "delta": 0.14995599999999998,
+   "ci": [
+    0.13279300685733597,
+    0.1656389035593111
+   ],
+   "p_a_not_better": 0.0
+  },
+  "text_auroc": 0.849446
+ },
+ "val_font": {
+  "n": 2000,
+  "n_wrong": 1017,
+  "auroc": 0.9927609079023838,
+  "auprc": 0.9943532721404397,
+  "base_rate": 0.5085,
+  "route@10": {
+   "recall": 0.19665683382497542,
+   "precision": 1.0,
+   "residual_error": 0.4538888888888889
+  },
+  "route@20": {
+   "recall": 0.39331366764995085,
+   "precision": 1.0,
+   "residual_error": 0.385625
+  },
+  "route@30": {
+   "recall": 0.5899705014749262,
+   "precision": 1.0,
+   "residual_error": 0.2978571428571429
+  },
+  "char_precision": 0.9611734253666955,
+  "char_recall": 0.9529512403763901,
+  "char_f1": 0.9570446735395188,
+  "top1_loc": 0.9685349065880039,
+  "n_loc": 1017,
+  "by_mode_vs_pos": {
+   "confusion": 0.9982716382585588,
+   "deletion": 0.9527975584944048,
+   "insertion": 0.9864184645466436,
+   "random_sub": 0.988594180539368,
+   "realword": 0.9995571401523052
+  },
+  "by_group_vs_pos": {
+   "ain": 1.0,
+   "alef_marks": 0.9998239298849675,
+   "beh": 0.999618514750763,
+   "beh_joined": 0.9998458645457629,
+   "dal": 0.9998177980899167,
+   "feh": 1.0,
+   "gaf": 1.0,
+   "gaf_digraph": 1.0,
+   "jeem": 0.9997858328425336,
+   "jeem_digraph": 1.0,
+   "kaf_gaf_stroke": 0.9941810783316378,
+   "noon": 0.9948941529816403,
+   "reh": 0.9998026145974097,
+   "sad": 1.0,
+   "seen": 0.999796541200407,
+   "tah": 1.0,
+   "waw_marks": 1.0,
+   "yeh_dots": 1.0
+  },
+  "by_font": {
+   "Mirza-Regular.ttf": {
+    "n": 2000,
+    "n_wrong": 1017,
+    "auroc": 0.9927609079023838,
+    "auprc": 0.9943532721404397,
+    "base_rate": 0.5085,
+    "route@10": {
+     "recall": 0.19665683382497542,
+     "precision": 1.0,
+     "residual_error": 0.4538888888888889
+    },
+    "route@20": {
+     "recall": 0.39331366764995085,
+     "precision": 1.0,
+     "residual_error": 0.385625
+    },
+    "route@30": {
+     "recall": 0.5899705014749262,
+     "precision": 1.0,
+     "residual_error": 0.2978571428571429
+    },
+    "char_precision": 0.9611734253666955,
+    "char_recall": 0.9529512403763901,
+    "char_f1": 0.9570446735395188,
+    "top1_loc": 0.9685349065880039,
+    "n_loc": 1017
+   }
+  },
+  "vs_text": {
+   "delta": 0.07273251969819283,
+   "ci": [
+    0.060600332640249555,
+    0.08384866787356415
+   ],
+   "p_a_not_better": 0.0
+  },
+  "text_auroc": 0.920028388204191
+ },
+ "val_font_hard": {
+  "n": 2000,
+  "n_wrong": 1000,
+  "auroc": 0.998021,
+  "auprc": 0.9984659122813596,
+  "base_rate": 0.5,
+  "route@10": {
+   "recall": 0.2,
+   "precision": 1.0,
+   "residual_error": 0.4444444444444444
+  },
+  "route@20": {
+   "recall": 0.4,
+   "precision": 1.0,
+   "residual_error": 0.375
+  },
+  "route@30": {
+   "recall": 0.6,
+   "precision": 1.0,
+   "residual_error": 0.2857142857142857
+  },
+  "char_precision": 0.9738625363020329,
+  "char_recall": 0.9843444227005871,
+  "char_f1": 0.9790754257907541,
+  "top1_loc": 0.993,
+  "n_loc": 1000,
+  "by_mode_vs_pos": {
+   "realword": 0.998021
+  },
+  "by_group_vs_pos": {
+   "ain": 1.0,
+   "alef_marks": 0.9998484848484849,
+   "beh": 0.996201646090535,
+   "beh_joined": 0.9970689655172413,
+   "dal": 0.9995806451612903,
+   "feh": 1.0,
+   "gaf": 0.99975,
+   "gaf_digraph": 0.997125,
+   "jeem": 0.9997935222672065,
+   "jeem_digraph": 1.0,
+   "kaf_gaf_stroke": 0.9999411764705882,
+   "noon": 0.993646551724138,
+   "reh": 0.9987234042553191,
+   "sad": 0.991,
+   "seen": 1.0,
+   "tah": 0.9994285714285714,
+   "waw_marks": 0.9995
+  },
+  "by_font": {
+   "Mirza-Regular.ttf": {
+    "n": 2000,
+    "n_wrong": 1000,
+    "auroc": 0.998021,
+    "auprc": 0.9984659122813596,
+    "base_rate": 0.5,
+    "route@10": {
+     "recall": 0.2,
+     "precision": 1.0,
+     "residual_error": 0.4444444444444444
+    },
+    "route@20": {
+     "recall": 0.4,
+     "precision": 1.0,
+     "residual_error": 0.375
+    },
+    "route@30": {
+     "recall": 0.6,
+     "precision": 1.0,
+     "residual_error": 0.2857142857142857
+    },
+    "char_precision": 0.9738625363020329,
+    "char_recall": 0.9843444227005871,
+    "char_f1": 0.9790754257907541,
+    "top1_loc": 0.993,
+    "n_loc": 1000
+   }
+  },
+  "vs_text": {
+   "delta": 0.1520125,
+   "ci": [
+    0.13513938272791337,
+    0.16866464734573994
+   ],
+   "p_a_not_better": 0.0
+  },
+  "text_auroc": 0.8460085
+ },
+ "test_iid": {
+  "n": 4000,
+  "n_wrong": 1918,
+  "auroc": 0.9942185313512014,
+  "auprc": 0.9951860959663671,
+  "base_rate": 0.4795,
+  "route@10": {
+   "recall": 0.20855057351407716,
+   "precision": 1.0,
+   "residual_error": 0.4216666666666667
+  },
+  "route@20": {
+   "recall": 0.4171011470281543,
+   "precision": 1.0,
+   "residual_error": 0.349375
+  },
+  "route@30": {
+   "recall": 0.6256517205422315,
+   "precision": 1.0,
+   "residual_error": 0.25642857142857145
+  },
+  "char_precision": 0.9843330349149507,
+  "char_recall": 0.951948051948052,
+  "char_f1": 0.9678697183098592,
+  "top1_loc": 0.9645464025026069,
+  "n_loc": 1918,
+  "by_mode_vs_pos": {
+   "confusion": 0.9996617904663136,
+   "deletion": 0.9707523453307989,
+   "insertion": 0.9762580724931282,
+   "random_sub": 0.9989154349106009
+  },
+  "by_group_vs_pos": {
+   "ain": 1.0,
+   "alef_marks": 0.9999605226797205,
+   "beh": 0.9998238872878642,
+   "beh_joined": 0.9999930390232358,
+   "dal": 0.9999249519692603,
+   "feh": 1.0,
+   "gaf": 0.999934503536809,
+   "gaf_digraph": 1.0,
+   "jeem": 0.9985154135010043,
+   "jeem_digraph": 0.9992109235625086,
+   "kaf_gaf_stroke": 0.9998955853485361,
+   "noon": 0.9999623722315922,
+   "reh": 0.9999710658194738,
+   "sad": 0.9997598463016331,
+   "seen": 0.9999676197260629,
+   "tah": 0.9997598463016331,
+   "waw_marks": 0.9999917188379873,
+   "yeh_dots": 0.9999815266385872
+  },
+  "by_font": {
+   "Amiri-Regular.ttf": {
+    "n": 833,
+    "n_wrong": 371,
+    "auroc": 0.9940724145575898,
+    "auprc": 0.9943630172951092,
+    "base_rate": 0.44537815126050423,
+    "route@10": {
+     "recall": 0.22371967654986524,
+     "precision": 1.0,
+     "residual_error": 0.384
+    },
+    "route@20": {
+     "recall": 0.4501347708894879,
+     "precision": 1.0,
+     "residual_error": 0.3063063063063063
+    },
+    "route@30": {
+     "recall": 0.6738544474393531,
+     "precision": 1.0,
+     "residual_error": 0.20754716981132076
+    },
+    "char_precision": 0.9816933638443935,
+    "char_recall": 0.9491150442477876,
+    "char_f1": 0.9651293588301461,
+    "top1_loc": 0.954177897574124,
+    "n_loc": 371
+   },
+   "Lateef-Regular.ttf": {
+    "n": 824,
+    "n_wrong": 410,
+    "auroc": 0.9950335807705903,
+    "auprc": 0.9960384093362148,
+    "base_rate": 0.4975728155339806,
+    "route@10": {
+     "recall": 0.2,
+     "precision": 1.0,
+     "residual_error": 0.4420485175202156
+    },
+    "route@20": {
+     "recall": 0.4024390243902439,
+     "precision": 1.0,
+     "residual_error": 0.37177541729893776
+    },
+    "route@30": {
+     "recall": 0.6024390243902439,
+     "precision": 1.0,
+     "residual_error": 0.2824956672443674
+    },
+    "char_precision": 0.9854771784232366,
+    "char_recall": 0.9424603174603174,
+    "char_f1": 0.9634888438133874,
+    "top1_loc": 0.9634146341463414,
+    "n_loc": 410
+   },
+   "NotoNaskhArabic.ttf": {
+    "n": 769,
+    "n_wrong": 376,
+    "auroc": 0.993449190623139,
+    "auprc": 0.9945522124163897,
+    "base_rate": 0.4889466840052016,
+    "route@10": {
+     "recall": 0.2047872340425532,
+     "precision": 1.0,
+     "residual_error": 0.4320809248554913
+    },
+    "route@20": {
+     "recall": 0.4095744680851064,
+     "precision": 1.0,
+     "residual_error": 0.36097560975609755
+    },
+    "route@30": {
+     "recall": 0.6143617021276596,
+     "precision": 1.0,
+     "residual_error": 0.2695167286245353
+    },
+    "char_precision": 0.985981308411215,
+    "char_recall": 0.9504504504504504,
+    "char_f1": 0.9678899082568808,
+    "top1_loc": 0.9707446808510638,
+    "n_loc": 376
+   },
+   "NotoSansArabic.ttf": {
+    "n": 812,
+    "n_wrong": 384,
+    "auroc": 0.9932401187694704,
+    "auprc": 0.9947153888231144,
+    "base_rate": 0.4729064039408867,
+    "route@10": {
+     "recall": 0.2109375,
+     "precision": 1.0,
+     "residual_error": 0.41450068399452805
+    },
+    "route@20": {
+     "recall": 0.421875,
+     "precision": 1.0,
+     "residual_error": 0.3415384615384615
+    },
+    "route@30": {
+     "recall": 0.6354166666666666,
+     "precision": 1.0,
+     "residual_error": 0.24647887323943662
+    },
+    "char_precision": 0.9931972789115646,
+    "char_recall": 0.9521739130434783,
+    "char_f1": 0.9722530521642619,
+    "top1_loc": 0.9713541666666666,
+    "n_loc": 384
+   },
+   "ScheherazadeNew-Regular.ttf": {
+    "n": 762,
+    "n_wrong": 377,
+    "auroc": 0.9957008508732647,
+    "auprc": 0.9963984921853635,
+    "base_rate": 0.494750656167979,
+    "route@10": {
+     "recall": 0.20159151193633953,
+     "precision": 1.0,
+     "residual_error": 0.4387755102040816
+    },
+    "route@20": {
+     "recall": 0.40318302387267907,
+     "precision": 1.0,
+     "residual_error": 0.36885245901639346
+    },
+    "route@30": {
+     "recall": 0.6074270557029178,
+     "precision": 1.0,
+     "residual_error": 0.2776735459662289
+    },
+    "char_precision": 0.9753363228699552,
+    "char_recall": 0.9666666666666667,
+    "char_f1": 0.9709821428571428,
+    "top1_loc": 0.9628647214854111,
+    "n_loc": 377
+   }
+  },
+  "vs_text": {
+   "delta": 0.044822972416632356,
+   "ci": [
+    0.03831520215190731,
+    0.05180326120989276
+   ],
+   "p_a_not_better": 0.0
+  },
+  "text_auroc": 0.9493955589345691
+ },
+ "test_font": {
+  "n": 4000,
+  "n_wrong": 1976,
+  "auroc": 0.987031632555088,
+  "auprc": 0.9895812773085482,
+  "base_rate": 0.494,
+  "route@10": {
+   "recall": 0.20242914979757085,
+   "precision": 1.0,
+   "residual_error": 0.43777777777777777
+  },
+  "route@20": {
+   "recall": 0.4048582995951417,
+   "precision": 1.0,
+   "residual_error": 0.3675
+  },
+  "route@30": {
+   "recall": 0.6072874493927125,
+   "precision": 1.0,
+   "residual_error": 0.27714285714285714
+  },
+  "char_precision": 0.919449081803005,
+  "char_recall": 0.9358538657604079,
+  "char_f1": 0.9275789473684211,
+  "top1_loc": 0.9529352226720648,
+  "n_loc": 1976,
+  "by_mode_vs_pos": {
+   "confusion": 0.9994586105645115,
+   "deletion": 0.9378747710402006,
+   "insertion": 0.9582845055316106,
+   "random_sub": 0.9904092775316062
+  },
+  "by_group_vs_pos": {
+   "ain": 0.9997637051039697,
+   "alef_marks": 1.0,
+   "beh": 0.9992178726135087,
+   "beh_joined": 0.9993506493506493,
+   "dal": 0.9999251407354174,
+   "feh": 0.9999794137022397,
+   "gaf": 0.9999203111054443,
+   "gaf_digraph": 1.0,
+   "jeem": 0.9994095247276583,
+   "jeem_digraph": 0.9985177865612648,
+   "kaf_gaf_stroke": 0.9994235836627141,
+   "noon": 0.9999692683019082,
+   "reh": 0.9988636363636364,
+   "sad": 1.0,
+   "seen": 0.9997848399846997,
+   "tah": 1.0,
+   "waw_marks": 0.9998423177192834,
+   "yeh_dots": 0.9999416097736256
+  },
+  "by_font": {
+   "Harmattan-Regular.ttf": {
+    "n": 1996,
+    "n_wrong": 1002,
+    "auroc": 0.9900048996574256,
+    "auprc": 0.9924643436373379,
+    "base_rate": 0.5020040080160321,
+    "route@10": {
+     "recall": 0.1996007984031936,
+     "precision": 1.0,
+     "residual_error": 0.4465478841870824
+    },
+    "route@20": {
+     "recall": 0.39820359281437123,
+     "precision": 1.0,
+     "residual_error": 0.3775829680651221
+    },
+    "route@30": {
+     "recall": 0.5978043912175649,
+     "precision": 1.0,
+     "residual_error": 0.2884753042233357
+    },
+    "char_precision": 0.958656330749354,
+    "char_recall": 0.9400337837837838,
+    "char_f1": 0.9492537313432835,
+    "top1_loc": 0.9560878243512974,
+    "n_loc": 1002
+   },
+   "NotoKufiArabic.ttf": {
+    "n": 2004,
+    "n_wrong": 974,
+    "auroc": 0.9840234445086821,
+    "auprc": 0.9867008514342275,
+    "base_rate": 0.48602794411177647,
+    "route@10": {
+     "recall": 0.2053388090349076,
+     "precision": 1.0,
+     "residual_error": 0.42904656319290463
+    },
+    "route@20": {
+     "recall": 0.41170431211498976,
+     "precision": 1.0,
+     "residual_error": 0.3574547723019339
+    },
+    "route@30": {
+     "recall": 0.6170431211498973,
+     "precision": 1.0,
+     "residual_error": 0.26585887384176765
+    },
+    "char_precision": 0.8825910931174089,
+    "char_recall": 0.9316239316239316,
+    "char_f1": 0.9064449064449065,
+    "top1_loc": 0.9496919917864476,
+    "n_loc": 974
+   }
+  },
+  "vs_text": {
+   "delta": 0.03495353330879647,
+   "ci": [
+    0.02881590381590382,
+    0.04147954280552879
+   ],
+   "p_a_not_better": 0.0
+  },
+  "text_auroc": 0.9520780992462915
+ },
+ "test_hard": {
+  "n": 2000,
+  "n_wrong": 1000,
+  "auroc": 0.999951,
+  "auprc": 0.9999521278565103,
+  "base_rate": 0.5,
+  "route@10": {
+   "recall": 0.2,
+   "precision": 1.0,
+   "residual_error": 0.4444444444444444
+  },
+  "route@20": {
+   "recall": 0.4,
+   "precision": 1.0,
+   "residual_error": 0.375
+  },
+  "route@30": {
+   "recall": 0.6,
+   "precision": 1.0,
+   "residual_error": 0.2857142857142857
+  },
+  "char_precision": 0.9950884086444007,
+  "char_recall": 0.9980295566502463,
+  "char_f1": 0.9965568125922282,
+  "top1_loc": 1.0,
+  "n_loc": 1000,
+  "by_mode_vs_pos": {
+   "realword": 0.999951
+  },
+  "by_group_vs_pos": {
+   "ain": 1.0,
+   "alef_marks": 1.0,
+   "beh": 0.9998441558441559,
+   "beh_joined": 1.0,
+   "dal": 1.0,
+   "feh": 1.0,
+   "gaf": 1.0,
+   "gaf_digraph": 0.9995,
+   "jeem": 0.9999920634920635,
+   "jeem_digraph": 1.0,
+   "kaf_gaf_stroke": 1.0,
+   "noon": 0.9999452054794521,
+   "reh": 1.0,
+   "sad": 1.0,
+   "seen": 1.0,
+   "tah": 1.0,
+   "waw_marks": 1.0
+  },
+  "by_font": {
+   "Amiri-Regular.ttf": {
+    "n": 423,
+    "n_wrong": 201,
+    "auroc": 1.0,
+    "auprc": 1.0,
+    "base_rate": 0.475177304964539,
+    "route@10": {
+     "recall": 0.208955223880597,
+     "precision": 1.0,
+     "residual_error": 0.41732283464566927
+    },
+    "route@20": {
+     "recall": 0.4228855721393035,
+     "precision": 1.0,
+     "residual_error": 0.3431952662721893
+    },
+    "route@30": {
+     "recall": 0.6318407960199005,
+     "precision": 1.0,
+     "residual_error": 0.25
+    },
+    "char_precision": 0.9950738916256158,
+    "char_recall": 1.0,
+    "char_f1": 0.9975308641975309,
+    "top1_loc": 1.0,
+    "n_loc": 201
+   },
+   "Lateef-Regular.ttf": {
+    "n": 393,
+    "n_wrong": 189,
+    "auroc": 0.9998962547982155,
+    "auprc": 0.9998884584210812,
+    "base_rate": 0.48091603053435117,
+    "route@10": {
+     "recall": 0.20634920634920634,
+     "precision": 1.0,
+     "residual_error": 0.423728813559322
+    },
+    "route@20": {
+     "recall": 0.41798941798941797,
+     "precision": 1.0,
+     "residual_error": 0.3503184713375796
+    },
+    "route@30": {
+     "recall": 0.6243386243386243,
+     "precision": 1.0,
+     "residual_error": 0.2581818181818182
+    },
+    "char_precision": 0.979381443298969,
+    "char_recall": 1.0,
+    "char_f1": 0.9895833333333333,
+    "top1_loc": 1.0,
+    "n_loc": 189
+   },
+   "NotoNaskhArabic.ttf": {
+    "n": 382,
+    "n_wrong": 211,
+    "auroc": 1.0,
+    "auprc": 1.0,
+    "base_rate": 0.5523560209424084,
+    "route@10": {
+     "recall": 0.18009478672985782,
+     "precision": 1.0,
+     "residual_error": 0.502906976744186
+    },
+    "route@20": {
+     "recall": 0.36018957345971564,
+     "precision": 1.0,
+     "residual_error": 0.4411764705882353
+    },
+    "route@30": {
+     "recall": 0.5450236966824644,
+     "precision": 1.0,
+     "residual_error": 0.3595505617977528
+    },
+    "char_precision": 1.0,
+    "char_recall": 0.9953271028037384,
+    "char_f1": 0.9976580796252927,
+    "top1_loc": 1.0,
+    "n_loc": 211
+   },
+   "NotoSansArabic.ttf": {
+    "n": 401,
+    "n_wrong": 205,
+    "auroc": 1.0,
+    "auprc": 1.0,
+    "base_rate": 0.5112219451371571,
+    "route@10": {
+     "recall": 0.1951219512195122,
+     "precision": 1.0,
+     "residual_error": 0.45706371191135736
+    },
+    "route@20": {
+     "recall": 0.3902439024390244,
+     "precision": 1.0,
+     "residual_error": 0.3894080996884735
+    },
+    "route@30": {
+     "recall": 0.5853658536585366,
+     "precision": 1.0,
+     "residual_error": 0.302491103202847
+    },
+    "char_precision": 1.0,
+    "char_recall": 1.0,
+    "char_f1": 1.0,
+    "top1_loc": 1.0,
+    "n_loc": 205
+   },
+   "ScheherazadeNew-Regular.ttf": {
+    "n": 401,
+    "n_wrong": 194,
+    "auroc": 0.9998754918073609,
+    "auprc": 0.9998682246766936,
+    "base_rate": 0.4837905236907731,
+    "route@10": {
+     "recall": 0.20618556701030927,
+     "precision": 1.0,
+     "residual_error": 0.4265927977839335
+    },
+    "route@20": {
+     "recall": 0.41237113402061853,
+     "precision": 1.0,
+     "residual_error": 0.35514018691588783
+    },
+    "route@30": {
+     "recall": 0.6185567010309279,
+     "precision": 1.0,
+     "residual_error": 0.26334519572953735
+    },
+    "char_precision": 1.0,
+    "char_recall": 0.995049504950495,
+    "char_f1": 0.9975186104218362,
+    "top1_loc": 1.0,
+    "n_loc": 194
+   }
+  },
+  "vs_text": {
+   "delta": 0.151142,
+   "ci": [
+    0.1342741115123307,
+    0.1677920584502549
+   ],
+   "p_a_not_better": 0.0
+  },
+  "text_auroc": 0.848809
+ },
+ "test_font_hard": {
+  "n": 2000,
+  "n_wrong": 1000,
+  "auroc": 0.997716,
+  "auprc": 0.9979320144297151,
+  "base_rate": 0.5,
+  "route@10": {
+   "recall": 0.2,
+   "precision": 1.0,
+   "residual_error": 0.4444444444444444
+  },
+  "route@20": {
+   "recall": 0.4,
+   "precision": 1.0,
+   "residual_error": 0.375
+  },
+  "route@30": {
+   "recall": 0.6,
+   "precision": 1.0,
+   "residual_error": 0.2857142857142857
+  },
+  "char_precision": 0.918572735590119,
+  "char_recall": 0.9862475442043221,
+  "char_f1": 0.9512079583135955,
+  "top1_loc": 0.991,
+  "n_loc": 1000,
+  "by_mode_vs_pos": {
+   "realword": 0.997716
+  },
+  "by_group_vs_pos": {
+   "ain": 0.99725,
+   "alef_marks": 1.0,
+   "beh": 0.9985083333333333,
+   "beh_joined": 0.99936,
+   "dal": 0.9927052631578948,
+   "feh": 1.0,
+   "gaf": 1.0,
+   "gaf_digraph": 0.9584,
+   "jeem": 0.9993609756097561,
+   "jeem_digraph": 0.9830526315789474,
+   "kaf_gaf_stroke": 0.9991951219512195,
+   "noon": 0.9985793103448276,
+   "reh": 0.99866,
+   "sad": 0.9986666666666667,
+   "seen": 0.9997368421052631,
+   "tah": 0.999,
+   "waw_marks": 0.9995
+  },
+  "by_font": {
+   "Harmattan-Regular.ttf": {
+    "n": 993,
+    "n_wrong": 483,
+    "auroc": 0.9991474850809889,
+    "auprc": 0.9991262737140522,
+    "base_rate": 0.486404833836858,
+    "route@10": {
+     "recall": 0.20496894409937888,
+     "precision": 1.0,
+     "residual_error": 0.42953020134228187
+    },
+    "route@20": {
+     "recall": 0.41200828157349895,
+     "precision": 1.0,
+     "residual_error": 0.35768261964735515
+    },
+    "route@30": {
+     "recall": 0.6169772256728778,
+     "precision": 1.0,
+     "residual_error": 0.26618705035971224
+    },
+    "char_precision": 0.9700598802395209,
+    "char_recall": 0.9878048780487805,
+    "char_f1": 0.9788519637462236,
+    "top1_loc": 0.9937888198757764,
+    "n_loc": 483
+   },
+   "NotoKufiArabic.ttf": {
+    "n": 1007,
+    "n_wrong": 517,
+    "auroc": 0.9959381044487428,
+    "auprc": 0.9966801016997373,
+    "base_rate": 0.5134061569016882,
+    "route@10": {
+     "recall": 0.195357833655706,
+     "precision": 1.0,
+     "residual_error": 0.45916114790286977
+    },
+    "route@20": {
+     "recall": 0.38878143133462284,
+     "precision": 1.0,
+     "residual_error": 0.3920595533498759
+    },
+    "route@30": {
+     "recall": 0.5841392649903289,
+     "precision": 1.0,
+     "residual_error": 0.3049645390070922
+    },
+    "char_precision": 0.875,
+    "char_recall": 0.9847908745247148,
+    "char_f1": 0.9266547406082289,
+    "top1_loc": 0.988394584139265,
+    "n_loc": 517
+   }
+  },
+  "vs_text": {
+   "delta": 0.1519205,
+   "ci": [
+    0.1342517444610798,
+    0.16970504475793502
+   ],
+   "p_a_not_better": 0.0
+  },
+  "text_auroc": 0.8457955
+ }
+}

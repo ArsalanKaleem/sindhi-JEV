@@ -132,3 +132,17 @@ test_font AUROC 0.9974 (v1 0.967), letter F1 0.942 (v1 0.812); test_font_hard AU
 (v1 0.795). v2 beats the text-only checker on every synthetic set (all paired-bootstrap CIs above 0). Weakest groups
 on unseen fonts: gaf_digraph, tah, jeem_digraph (AUROC 0.992-0.997). Synthetic sets are now near ceiling; the open
 question is real scans (final evaluation).
+
+## 2026-11-24: ablation results (synthetic)
+
+Six runs x 16k steps on the v2 recipe (parts A and B, 7.48 + 7.11 GPU h). Table: `results/ablations.md`
+(paired clustered bootstrap vs `abl_ref` on the same examples; per-run details in `results/synth_abl_*.md`).
+- **Scan image is essential:** without it AUROC drops ~0.04 on every set (CIs well below 0). It still beats the
+  text-only checker on real-word swaps (test_font_hard 0.958 vs 0.846), so synthetic real-word negatives still carry
+  some text-only cues; to be stated in the paper.
+- **Per-character head helps the sequence decision too:** removing it costs 0.03-0.05 AUROC.
+- **Real-word swaps in training matter on unseen fonts:** v1 mix loses 0.021-0.030 on font sets, nothing in-font.
+- **Re-render and char alignment add little on synthetic data:** small losses on unseen fonts (-0.002 to -0.004,
+  CIs just below 0 on val_font_hard / test_font), none on the hard in-font sets. Kept in the model; whether they
+  matter on real scans is checked in the final real evaluation (ablation checkpoints scored there, not selected).
+GPU total ~32.7 / 60.
