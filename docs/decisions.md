@@ -146,3 +146,23 @@ Six runs x 16k steps on the v2 recipe (parts A and B, 7.48 + 7.11 GPU h). Table:
   CIs just below 0 on val_font_hard / test_font), none on the hard in-font sets. Kept in the model; whether they
   matter on real scans is checked in the final real evaluation (ablation checkpoints scored there, not selected).
 GPU total ~32.7 / 60.
+
+## 2026-11-24: blind relabel, word crops (pass 2)
+
+34 word crops (`data/real/relabel_queue.txt`) relabelled blind on 2026-11-24 (local time; the export file name uses
+the UTC date 2026-11-23) -> `data/real/gold_pass2.csv`; report `data/real/agreement.json`.
+Pass 2 was typed with ی / ھ and RLM marks where pass 1 mostly has ي / ه (a keyboard difference; labelling rule 5),
+so agreement is reported raw and **encoding-folded** (`realset.fold_encoding`: encoding groups -> canonical form,
+bidi marks dropped):
+| | raw | folded |
+|---|---|---|
+| status agreement | 1.00 | 1.00 |
+| exact gold text | 0.29 | 0.65 |
+| mean CER | 0.146 | 0.062 |
+| error-label kappa (170 engine outputs) | 0.34 | 0.77 |
+| error-label agreement | 0.82 | 0.94 |
+| letter-mark F1 | 0.78 | 0.94 |
+Of 12 folded disagreements, 7 are harakat or punctuation only; 5 differ in letters (baloch1961_p0077_v2w04,
+bcp1873_p0012_v2w06, dharejo2002_p0045_v2w12, bcp1873_p0016_v2w04, lughat1960_p0239_v2w03).
+**Adjudication (author, 2026-11-24): pass 1 kept for all.** gold.csv unchanged, real set stays frozen.
+Paper reports the folded numbers as label consistency and the raw ones in the appendix.

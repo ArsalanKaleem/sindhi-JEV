@@ -84,6 +84,7 @@ def main():
         p1 = [g for g in R.read_csv(root / "gold.csv") if g["pass"] == "1"]
         p2 = R.read_csv(a.pass2)
         rep = R.agreement(cands, p1, p2)
+        rep["encoding_folded"] = R.agreement(cands, p1, p2, fold=True)  # net of ي/ی, ه/ھ/ہ, ڪ/ک/ك, bidi marks
         (root / "agreement.json").write_text(json.dumps(rep, indent=1), encoding="utf-8")
         print(json.dumps(rep, indent=1))
 
