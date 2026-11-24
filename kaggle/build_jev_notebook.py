@@ -54,7 +54,7 @@ def start(dtype):
                          f"attn_implementation: sdpa\\nmax_in_flight: 1\\nmax_batch_size: 8\\n")
     log = open(f"{OUT}/service_{dtype}.log", "w")
     p = subprocess.Popen(["bash", "sdk/start_score.sh", str(PORT)], cwd=JEV, stdout=log, stderr=subprocess.STDOUT,
-                         env={**os.environ, "JEV_BACKEND_CONFIG": cfg})
+                         env={**os.environ, "JEV_BACKEND_CONFIG": cfg, "JEV_WEIGHTS": WEIGHTS})  # full prompt self-check
     for _ in range(120):
         time.sleep(5)
         h = healthz()
