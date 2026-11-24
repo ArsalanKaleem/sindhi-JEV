@@ -31,6 +31,10 @@ if not os.path.exists(REPO):
 COMMIT = subprocess.run(["git", "-C", REPO, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
 JEV = f"{REPO}/scripts/minicpm-ocr-jev"
 !pip install -q -r {JEV}/sdk/requirements-transformers.txt
+# Kaggle's preinstalled torchaudio is built for another CUDA than the new torch, and transformers then fails to import
+# AutoProcessor (seen 2026-11-24). Jev does not use audio.
+!pip uninstall -y -q torchaudio
+!python3 -c "from transformers import AutoProcessor, Qwen3_5ForSequenceClassification; print('import ok')"
 from huggingface_hub import snapshot_download
 WEIGHTS = snapshot_download("openbmb/MiniCPM-OCR-Jev")
 import torch, transformers
