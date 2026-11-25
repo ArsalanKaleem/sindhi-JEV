@@ -19,7 +19,8 @@ Design decisions: `docs/decisions.md`.
 | 3 Model v2 | **adopted**: 9 fonts + page realism; unseen-font val AUROC 0.9997 vs v1 0.9834, letter F1 0.989 vs 0.884 | ~9.8 |
 | 3 Ablations | 6 runs x 16k steps: scan image, per-letter head and real-word training errors matter (-0.02 to -0.05 AUROC); re-render and alignment add little on synthetic data. `results/ablations.md` | ~14.6 |
 | 3 Jev zero-shot | MiniCPM-OCR Jev (2B) as released: AUROC 0.88 on unseen-font real-word swaps vs v2 0.999 (text-only 0.85). `results/synth_jev.md` | ~0.7 |
-| Next | line relabel, final real evaluation, paper, pip tool: see the [Roadmap](https://github.com/ArsalanKaleem/sindhi-JEV/issues/14) | ~33.4 / 60 used |
+| 2 Blind relabel | words (34): error-label kappa 0.77, letter F1 0.94; lines (8): kappa 1.00, letter F1 0.92 (keyboard variants folded); pass 1 kept | 0 |
+| Next | final real evaluation, paper, pip tool: see the [Roadmap](https://github.com/ArsalanKaleem/sindhi-JEV/issues/14) | ~33.4 / 60 used |
 
 ## Setup (Windows or Linux, Python 3.12)
 
