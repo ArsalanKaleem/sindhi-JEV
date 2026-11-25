@@ -67,7 +67,7 @@ LAYOUT = """<!doctype html>
     <div class="crumb">{section}</div>
 {body}
     <nav class="pager">{pager}</nav>
-    <div class="foot">Sindhi-Jev · Apache-2.0 · <a href="{repo}">source on GitHub</a> · numbers on this site come from
+    <div class="foot">Sindhi-Jev by Arsalan Kaleem (<a href="https://orcid.org/0009-0002-9054-6965">ORCID 0009-0002-9054-6965</a>) · Apache-2.0 · <a href="{repo}">source on GitHub</a> · numbers on this site come from
       the repository's result files; nothing here was tuned on the real test set.</div>
   </article></main>
   <aside class="toc"><h5>On this page</h5><div id="toc-list"></div></aside>

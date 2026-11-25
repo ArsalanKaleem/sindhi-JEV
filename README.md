@@ -169,8 +169,12 @@ releasing any real images, dot repair on real scans (needs a new pre-registered 
 
 ## Citation and licence
 
-A paper is in preparation; until then please cite this repository (Arsalan Kaleem, *Sindhi-Jev*, 2026,
-https://github.com/ArsalanKaleem/sindhi-JEV).
+Author: **Arsalan Kaleem**, independent researcher, Shikarpur, Sindh, Pakistan ·
+ORCID [0009-0002-9054-6965](https://orcid.org/0009-0002-9054-6965).
+
+A paper is in preparation; until then please cite this repository (GitHub's **"Cite this repository"** button uses
+[CITATION.cff](CITATION.cff)): Arsalan Kaleem, *Sindhi-Jev: a small dot-aware checker for Sindhi OCR*, 2026,
+https://github.com/ArsalanKaleem/sindhi-JEV.
 
 - **Code and model:** [Apache License 2.0](LICENSE).
 - **Fonts:** SIL Open Font License; licence texts next to each font in `fonts/`.

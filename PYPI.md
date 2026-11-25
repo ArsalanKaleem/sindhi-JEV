@@ -28,3 +28,5 @@ wrong OCR outputs above correct ones with AUROC 0.884 (0.935 on dot errors); on 
 - Live demo: https://huggingface.co/spaces/ArsalanKaleem/sindhijev
 - Source, data and results: https://github.com/ArsalanKaleem/sindhi-JEV
 - Licence: Apache-2.0 (bundled Noto Naskh Arabic font: SIL Open Font License)
+
+Author: Arsalan Kaleem, ORCID https://orcid.org/0009-0002-9054-6965
