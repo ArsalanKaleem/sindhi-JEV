@@ -2,29 +2,33 @@
 
 Nothing here runs automatically. Each step is yours to start.
 
-## 1. Hugging Face Space (online playground + docs)
+## 1. Hugging Face Space (online checker, Gradio SDK, free CPU)
 
 ```
 python scripts/export_onnx.py          # if dist/sindhijev_v2.onnx is missing
-python site_src/build.py
-python space/make_space.py             # -> dist/hf_space/ (~31 MB: model, site, 24 synthetic samples)
+python space/make_space.py             # -> dist/hf_space/ (~30 MB: app.py, model, package, 24 synthetic samples)
+python dist/hf_space/app.py            # test at http://127.0.0.1:7860 before uploading
 ```
 
-1. On huggingface.co: **New Space** → name `sindhijev` → SDK **Docker** → Blank → public or private.
-2. Upload the contents of `dist/hf_space/` (web upload, or `git clone` the Space, copy the files in, `git lfs install`,
-   commit and push; the `.onnx` and `.ttf` files go through Git LFS).
-3. The Space builds the Dockerfile and serves on port 7860. Its URL looks like `https://<user>-sindhijev.hf.space`.
+1. huggingface.co → **New Space** → name `sindhijev`, licence **apache-2.0**, SDK **Gradio**, template **Blank**,
+   hardware **CPU Basic** (free), public → **Create Space**. (Docker is a paid option on some accounts; not needed.)
+2. On the Space: **Files → Add file → Upload files**. Drag in everything *inside* `dist/hf_space/` (keep the folders
+   `src/`, `model/`, `data/`), replacing the template's `README.md`. Commit.
+3. The Space installs `requirements.txt` and starts `app.py` (Gradio 6.32.0, set in `README.md`). Build log:
+   **Logs** tab. Address: `https://huggingface.co/spaces/<user>/sindhijev`.
 
-The Space serves the docs and the playground together, so it works on its own.
+The Space is a Gradio app (check / repair / compare). The docs site's playground uses this repository's own API, so
+on GitHub Pages it links to the Space instead (step 2).
 
 ## 2. GitHub Pages (docs)
 
 1. Repository **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-2. Optional: **Settings → Secrets and variables → Actions → Variables → New variable** `SINDHIJEV_API` = your Space
-   URL (must start with `https://`). The Pages playground then calls the Space.
+2. Optional: **Settings → Secrets and variables → Actions → Variables → New repository variable**
+   `SINDHIJEV_SPACE` = your Space page, e.g. `https://huggingface.co/spaces/<user>/sindhijev`. The Pages playground then
+   shows an "Open the live checker on Hugging Face" button.
 3. **Actions → Docs site → Run workflow.** The site appears at `https://<user>.github.io/sindhi-JEV/`.
 
-Without `SINDHIJEV_API`, the Pages playground shows how to run the checker locally.
+Without `SINDHIJEV_SPACE`, the Pages playground shows how to run the checker locally.
 
 ## 3. Model release and PyPI (later)
 

@@ -134,9 +134,12 @@
       status(true, `<b class="t">Checker connected</b>Model v2 · letter threshold ${info.char_threshold} · temperature ${info.temperature.toFixed(3)}${API ? ` · ${esc(API)}` : " · running on this computer"}`);
       await loadSamples();
     } catch (e) {
-      status(false, `<b class="t">The checker service is not reachable</b>This page needs the checker API. Run
-        <code>python tools/demo/server.py</code> and open <a href="http://localhost:8770/playground.html">localhost:8770/playground.html</a>,
-        or open this page with <code>?api=&lt;your Hugging Face Space URL&gt;</code>.`);
+      const space = window.SINDHIJEV_SPACE;
+      status(false, (space && /^https:\/\//.test(space)
+        ? `<b class="t">Try it online</b><a class="btn" style="margin:6px 0" href="${esc(space)}" target="_blank" rel="noopener">Open the live checker on Hugging Face</a><br>`
+        : `<b class="t">The checker is not running here</b>`) +
+        `To use this playground on your own computer, run <code>python tools/demo/server.py</code> and open
+        <a href="http://localhost:8770/playground.html">localhost:8770/playground.html</a>.`);
       document.querySelector(".pg").style.opacity = .55;
     }
   })();

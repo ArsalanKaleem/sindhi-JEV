@@ -23,13 +23,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Point the playground at the hosted checker (repository variable SINDHIJEV_API, optional)
-        if: ${{ vars.SINDHIJEV_API != '' }}
+      - name: Link the playground to the Hugging Face Space (repository variable SINDHIJEV_SPACE, optional)
+        if: ${{ vars.SINDHIJEV_SPACE != '' }}
         env:
-          API: ${{ vars.SINDHIJEV_API }}
+          SPACE: ${{ vars.SINDHIJEV_SPACE }}
         run: |
-          case "$API" in https://*) ;; *) echo "SINDHIJEV_API must start with https://"; exit 1;; esac
-          printf 'window.SINDHIJEV_API = %s;\n' "$(python -c 'import json,os; print(json.dumps(os.environ["API"]))')" > site_src/assets/config.js
+          case "$SPACE" in https://*) ;; *) echo "SINDHIJEV_SPACE must start with https://"; exit 1;; esac
+          printf 'window.SINDHIJEV_API = "";\nwindow.SINDHIJEV_SPACE = %s;\n' "$(python -c 'import json,os; print(json.dumps(os.environ["SPACE"]))')" > site_src/assets/config.js
       - run: python site_src/build.py
       - uses: actions/upload-pages-artifact@v3
         with:
