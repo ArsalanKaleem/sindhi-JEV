@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sindhijev"
+version = "0.1.0.dev0"
+description = "Check Sindhi OCR text against the scan: per-letter dot-error flags with a 7M-parameter CPU model"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "src/sindhijev/assets/OFL-NotoNaskhArabic.txt"]
+requires-python = ">=3.10"
+authors = [{ name = "Arsalan Kaleem" }]
+keywords = ["sindhi", "ocr", "arabic-script", "verification", "low-resource"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "numpy>=1.24",
+    "opencv-python-headless>=4.8",
+    "uharfbuzz>=0.39",
+    "freetype-py>=2.4",
+    "onnxruntime>=1.17",
+]
+
+[project.optional-dependencies]
+train = ["torch>=2.2"]
+
+[project.scripts]
+sindhijev = "sindhijev.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/ArsalanKaleem/sindhi-JEV"
+Issues = "https://github.com/ArsalanKaleem/sindhi-JEV/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+sindhijev = ["assets/*.ttf", "assets/*.txt", "assets/*.json"]
