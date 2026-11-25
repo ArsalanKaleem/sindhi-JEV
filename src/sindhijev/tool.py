@@ -14,6 +14,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 import unicodedata
 import urllib.request
@@ -26,9 +27,13 @@ import numpy as np
 from .data import encode, fill_ranges, prep_image
 from .realset import norm
 
-# Filled in when a GitHub release with the weights exists (see docs/release.md); override with SINDHIJEV_WEIGHTS.
-WEIGHTS_URL = os.environ.get("SINDHIJEV_WEIGHTS_URL", "")
-WEIGHTS_SHA256 = os.environ.get("SINDHIJEV_WEIGHTS_SHA256", "")
+# Model v2 (runs/main_v2/last.pt, step 60,000), exported by scripts/export_onnx.py; attached to the GitHub release
+# v0.1.0. Downloaded once to the cache and checked against this hash. SINDHIJEV_WEIGHTS points at a local copy instead.
+WEIGHTS_URL = os.environ.get(
+    "SINDHIJEV_WEIGHTS_URL",
+    "https://github.com/ArsalanKaleem/sindhi-JEV/releases/download/v0.1.0/sindhijev_v2.onnx")
+WEIGHTS_SHA256 = os.environ.get(
+    "SINDHIJEV_WEIGHTS_SHA256", "8ca2bf173a5c9b36c634dbbc7f7e5d53dd1db468c54f6c5f88f516fa839cfa0d")
 CACHE = Path(os.environ.get("SINDHIJEV_CACHE", Path.home() / ".cache" / "sindhijev"))
 TESS_ENGINES = {"tess_snd": "snd", "tess_urd": "urd", "tess_ara": "ara", "tess_fas": "fas"}
 
@@ -57,18 +62,14 @@ def weights_path():
                                 "(the download URL is set once the weights are released).")
     CACHE.mkdir(parents=True, exist_ok=True)
     tmp = dst.with_suffix(".part")
+    print(f"sindhijev: downloading the model (~30 MB, once) to {dst}", file=sys.stderr, flush=True)
     with urllib.request.urlopen(WEIGHTS_URL, timeout=120) as r, open(tmp, "wb") as f:
         shutil.copyfileobj(r, f)
     if WEIGHTS_SHA256 and _sha256(tmp) != WEIGHTS_SHA256:
         tmp.unlink()
         raise RuntimeError("downloaded weights fail the sha256 check")
     tmp.replace(dst)
-    for side in ("json",):  # model card next to the weights
-        try:
-            urllib.request.urlretrieve(WEIGHTS_URL.rsplit(".", 1)[0] + "." + side, dst.with_suffix("." + side))
-        except OSError:
-            pass
-    return dst
+    return dst  # the model card (temperature, threshold) ships inside the package: assets/sindhijev_v2.json
 
 
 def _font():
@@ -103,8 +104,9 @@ class Checker:
         if threads:
             so.intra_op_num_threads = threads
         self.sess = ort.InferenceSession(str(w), so, providers=["CPUExecutionProvider"])
-        card = w.with_suffix(".json")
-        meta = json.loads(card.read_text(encoding="utf-8")) if card.exists() else {}
+        card = w.with_suffix(".json")  # a card next to the weights wins; else the packaged card of the released model
+        packaged = resources.files("sindhijev") / "assets" / "sindhijev_v2.json"
+        meta = json.loads((card if card.exists() else packaged).read_text(encoding="utf-8"))
         cfg = meta.get("model_cfg", {})
         self.H = cfg.get("img_height", 48)
         self.max_w = cfg.get("max_width", 1024)

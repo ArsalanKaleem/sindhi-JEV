@@ -1,0 +1,39 @@
+{
+ "ckpt": "runs/main_v2/last.pt",
+ "step": 60000,
+ "batch16": {
+  "seq_max_abs": 9.5367431640625e-06,
+  "char_max_abs": 9.5367431640625e-06
+ },
+ "single": {
+  "seq_max_abs": 9.5367431640625e-07,
+  "char_max_abs": 1.1444091796875e-05
+ },
+ "model_cfg": {
+  "img_height": 48,
+  "max_width": 1024,
+  "max_chars": 96,
+  "d_model": 256,
+  "n_heads": 8,
+  "n_layers": 4,
+  "ffn": 1024,
+  "dropout": 0.1,
+  "cnn_channels": [
+   32,
+   64,
+   128,
+   256
+  ],
+  "use_scan": true,
+  "use_render": true,
+  "char_align": true,
+  "char_head": true,
+  "char_loss_weight": 1.0,
+  "seq_pos_weight": 1.0,
+  "char_pos_weight": 5.0
+ },
+ "temperature": 1.1451120086269373,
+ "char_threshold": 0.817,
+ "source": "https://github.com/ArsalanKaleem/sindhi-JEV",
+ "license": "Apache-2.0"
+}
