@@ -37,6 +37,9 @@
   .okc { color:var(--ok); } .badc { color:var(--bad); }
   .palette { display:flex; flex-wrap:wrap; gap:4px; direction:rtl; }
   .palette button { font-size:22px; min-width:38px; }
+  .kbrow { display:flex; flex-wrap:wrap; gap:4px; direction:rtl; margin:3px 0; }
+  .kbrow button { font-size:22px; min-width:38px; }
+  .kbrow button.wide { min-width:90px; font-size:15px; }
   button { font:inherit; padding:6px 12px; border:1px solid var(--line); border-radius:6px; background:var(--card);
            color:var(--fg); cursor:pointer; }
   button.primary { background:var(--acc); color:#fff; border-color:var(--acc); }
@@ -77,7 +80,8 @@
     <div class="card">
       <div class="help">Type exactly what is printed (canonical ه ي ڪ). Pre-filled from <span id="prefillEng"></span> only to save typing.</div>
       <textarea id="gold" class="ar" dir="rtl" spellcheck="false"></textarea>
-      <div class="palette" id="palette" style="margin:6px 0"></div>
+      <div id="palette" style="margin:6px 0"></div>
+      <label class="help"><input type="checkbox" id="canon" checked> Fix keyboard letters while typing (ی ى &rarr; ي, ھ ہ &rarr; ه, ك &rarr; ڪ; removes invisible direction marks). ک stays: it is a Sindhi letter.</label>
       <div class="help">Gold characters (click = ambiguous):</div>
       <div class="chars ar" id="goldChars"></div>
     </div>
@@ -96,7 +100,18 @@
 </main>
 <script>
 "use strict";
-const PALETTE = "ٻڀٿٽٺڄڃڇڌڏڊڍڙڦڪکڳڱڻ۽ءآئؤ".split("");
+// On-screen Sindhi keyboard: the 52-letter alphabet in dictionary order (جه, گه are digraph keys), then extras.
+const KEYBOARD = [
+  ["ا", "ب", "ٻ", "ڀ", "ت", "ٿ", "ٽ", "ٺ", "ث", "پ", "ج", "ڄ", "جه", "ڃ", "چ", "ڇ", "ح", "خ"],
+  ["د", "ڌ", "ڏ", "ڊ", "ڍ", "ذ", "ر", "ڙ", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ"],
+  ["ف", "ڦ", "ق", "ڪ", "ک", "گ", "ڳ", "گه", "ڱ", "ل", "م", "ن", "ڻ", "و", "ه", "ء", "ي"],
+  ["آ", "ئ", "ؤ", "أ", "۽", "۾", "َ", "ُ", "ِ", "ّ", "ْ", "ً", "،", "؛", "؟", ".", ":", "(", ")", "-", "\"", "[", "]"],
+];
+// Labelling rule 5 (canonical ه ي ڪ) applied while typing: Farsi/Urdu yeh, alef maksura, heh doachashmee,
+// heh goal, Arabic kaf; LRM, RLM and Arabic letter mark are removed. ک (keheh) is a Sindhi letter and is kept.
+const CANON = { "ی": "ي", "ى": "ي", "ھ": "ه", "ہ": "ه", "ك": "ڪ",
+                "‎": "", "‏": "", "؜": "" };
+const canon = s => s.replace(/[یىھہك‎‏؜]/g, ch => CANON[ch]);
 const S = { crops: [], cands: {}, files: {}, i: 0, pass: "1", queue: null, labels: {}, t0: Date.now(), amb: new Set(), ovr: {} };
 const $ = id => document.getElementById(id);
 
@@ -169,7 +184,7 @@ function show() {
     prefill = pick ? pick.cand_text : ""; peng = pick ? pick.engine : "nothing";
   }
   $("prefillEng").textContent = peng;
-  $("gold").value = prefill;
+  $("gold").value = $("canon").checked ? canon(prefill) : prefill;
   S.amb = new Set(prev && prev.ambiguous_chars ? prev.ambiguous_chars.split(" ").filter(Boolean).map(Number) : []);
   S.ovr = prev && prev.override_json ? JSON.parse(prev.override_json) : {};
   S.t0 = Date.now();
@@ -251,7 +266,11 @@ $("candCsv").onchange = async e => { S.cands = {}; for (const r of parseCSV(awai
 $("queue").onchange = async e => { S.queue = new Set((await readFile(e.target.files[0])).split(/\r?\n/).map(s => s.split(",")[0].trim()).filter(s => s && s !== "crop_id")); S.i = 0; maybeStart(); };
 const ALLOW_OVR = new URLSearchParams(location.search).get("override") === "1";
 $("pass").onchange = e => { S.pass = e.target.value; maybeStart(); };
-$("gold").oninput = () => { S.amb.clear(); renderMarks(); };
+$("gold").oninput = () => {
+  const g = $("gold");
+  if ($("canon").checked) { const v = canon(g.value); if (v !== g.value) { const c = g.selectionStart; g.value = v; g.setSelectionRange(c, c); } }
+  S.amb.clear(); renderMarks();
+};
 $("zoom").oninput = applyZoom;
 $("save").onclick = () => save("ok");
 document.querySelectorAll("button.st").forEach(b => b.onclick = () => save(b.dataset.status));
@@ -264,9 +283,18 @@ document.addEventListener("keydown", e => {
   if (e.ctrlKey && e.key === "ArrowRight") { e.preventDefault(); S.i++; show(); }
 });
 const pal = $("palette");
-for (const ch of PALETTE) { const b = document.createElement("button"); b.type = "button"; b.className = "ar"; b.textContent = ch;
-  b.onclick = () => { const t = $("gold"), s = t.selectionStart, en = t.selectionEnd; t.setRangeText(ch, s, en, "end"); t.focus(); t.dispatchEvent(new Event("input")); };
-  pal.appendChild(b); }
+const key = (label, act, cls) => { const b = document.createElement("button"); b.type = "button"; b.className = "ar " + (cls || "");
+  b.textContent = label; b.tabIndex = -1; b.onmousedown = e => e.preventDefault();  // keep the caret in the textbox
+  b.onclick = () => { const t = $("gold"); act(t); t.focus(); t.dispatchEvent(new Event("input")); }; return b; };
+const ins = ch => t => t.setRangeText(ch, t.selectionStart, t.selectionEnd, "end");
+for (const row of KEYBOARD) { const r = document.createElement("div"); r.className = "kbrow";
+  for (const ch of row) r.appendChild(key(/[ً-ْ]/.test(ch) ? "◌" + ch : ch, ins(ch)));
+  pal.appendChild(r); }
+const last = document.createElement("div"); last.className = "kbrow";
+last.appendChild(key("space", ins(" "), "wide"));
+last.appendChild(key("⌫ delete", t => { const s = t.selectionStart, e = t.selectionEnd;
+  if (s !== e) t.setRangeText("", s, e, "end"); else if (s > 0) { t.setRangeText("", s - 1, s, "end"); } }, "wide"));
+pal.appendChild(last);
 // Server mode: python -m http.server (repo root), open /tools/labeler.html?data=../data/real
 (async () => {
   const p = new URLSearchParams(location.search), d = p.get("data");
