@@ -48,6 +48,19 @@ def prep_image(img, height):
     return x[None]
 
 
+def fill_ranges(char_x):
+    """The renderer gives no x-range for a few spaces (e.g. at a direction change next to digits or Latin text in
+    real OCR output; never in training data). Such a char takes the previous char's range, else the next one's,
+    else (0, 0); the model widens tiny ranges to one token anyway. Found in the final evaluation, 2026-11-25."""
+    out = list(char_x)
+    for i, x in enumerate(out):
+        if x is None:
+            prev = next((out[j] for j in range(i - 1, -1, -1) if out[j] is not None), None)
+            nxt = next((y for y in out[i + 1:] if y is not None), None)
+            out[i] = prev or nxt or (0, 0)
+    return out
+
+
 def to_example(scan, cand_img, cand, char_x, seq_label, char_labels, cfg, meta=None):
     """Raw arrays -> model example. char_x: [(x0, x1)] in cand_img pixel coordinates (len == len(cand))."""
     H = cfg["img_height"]
@@ -60,7 +73,7 @@ def to_example(scan, cand_img, cand, char_x, seq_label, char_labels, cfg, meta=N
         c = cv2.resize(c[0], (cfg["max_width"], H), interpolation=cv2.INTER_AREA)[None]
     ids = encode(cand)[: cfg["max_chars"]]
     L = len(ids)
-    cx = np.array([[a / wc, b / wc] for a, b in char_x[:L]], np.float32).reshape(L, 2)
+    cx = np.array([[a / wc, b / wc] for a, b in fill_ranges(char_x[:L])], np.float32).reshape(L, 2)
     return {"scan": s, "cand_img": c, "ids": np.array(ids, np.int64), "char_x": cx,
             "seq_label": float(seq_label), "char_labels": np.array(char_labels[:L], np.float32),
             "meta": meta or {}}

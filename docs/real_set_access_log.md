@@ -1,1 +1,7 @@
 - 2026-11-25 19:54 make_real_items (Jev inputs: crops + candidate renders, no gold or labels) {'words': (471, 3297), 'lines': (80, 560)}
+- 2026-11-25 22:42 eval_real --final name=main_v2 ckpt=runs/main_v2/last.pt root=real extras=['abl_noalign', 'abl_nocharhead', 'abl_norender', 'abl_noscan', 'abl_ref', 'abl_v1mix', 'main'] jev=True
+- 2026-11-25 23:04 eval_real --final name=main_v2 ckpt=runs/main_v2/last.pt root=lines extras=['abl_noalign', 'abl_nocharhead', 'abl_norender', 'abl_noscan', 'abl_ref', 'abl_v1mix', 'main'] jev=True
+- 2026-11-25 23:14 eval_real --final name=main_v2 ckpt=runs/main_v2/last.pt root=addendum_v1 extras=['abl_noalign', 'abl_nocharhead', 'abl_norender', 'abl_noscan', 'abl_ref', 'abl_v1mix', 'main'] jev=True
+- 2026-11-25 23:16 eval_real --final name=main_v2 ckpt=runs/main_v2/last.pt root=addendum_v1 extras=['abl_noalign', 'abl_nocharhead', 'abl_norender', 'abl_noscan', 'abl_ref', 'abl_v1mix', 'main'] jev=True
+- 2026-11-25 23:32 note: the 23:14 words-addendum run crashed in data preparation (a space with no render x-range, data.fill_ranges added) before any score was computed; the 23:16 run is the lines addendum (same folder name; outputs renamed words / lines / lines_addendum). Re-running the words addendum once.
+- 2026-11-25 23:33 eval_real --final name=main_v2 ckpt=runs/main_v2/last.pt root=words_addendum extras=['abl_noalign', 'abl_nocharhead', 'abl_norender', 'abl_noscan', 'abl_ref', 'abl_v1mix', 'main'] jev=True
