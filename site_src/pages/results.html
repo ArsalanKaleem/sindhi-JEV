@@ -1,0 +1,70 @@
+<!-- title: Results | description: Synthetic and real-scan results, baselines and ablations. -->
+<h1>Results</h1>
+<p class="lede">All numbers are AUROC unless stated: how well a method ranks wrong OCR outputs above correct ones.
+Brackets are 95% confidence intervals from a bootstrap over crops.</p>
+
+<h2 id="real-words">Real scans: word crops</h2>
+<p>336 hand-labelled word crops from 14 printed sources. Each crop was read by 5 Tesseract models (1,680 outputs);
+the right column adds 2 EasyOCR models (2,352 outputs). The difference column compares v2 with each method on the
+same outputs.</p>
+<div class="tbl"><table>
+  <tr><th>Method</th><th class="num">5 engines</th><th class="num">v2 − method</th><th class="num">7 engines</th></tr>
+  <tr class="hl"><td><b>Sindhi-Jev v2</b> (7 M)</td><td class="num"><b>0.884</b></td><td class="num"></td><td class="num"><b>0.896</b></td></tr>
+  <tr><td>MiniCPM-OCR Jev (2 B, zero-shot)</td><td class="num">0.885</td><td class="num">−0.001 [−0.038, +0.037]</td><td class="num">0.898</td></tr>
+  <tr><td>OCR engine confidence</td><td class="num">0.835</td><td class="num">+0.049 [+0.014, +0.083]</td><td class="num">0.821</td></tr>
+  <tr><td>Agreement between engines</td><td class="num">0.819</td><td class="num">+0.065 [+0.030, +0.100]</td><td class="num">0.795</td></tr>
+  <tr><td>Text-only checker</td><td class="num">0.714</td><td class="num">+0.170 [+0.130, +0.212]</td><td class="num">0.699</td></tr>
+  <tr><td>v1 (5 fonts, no page realism)</td><td class="num">0.860</td><td class="num">+0.024 [+0.002, +0.048]</td><td class="num">0.867</td></tr>
+</table></div>
+
+<h3 id="dot-errors">Dot errors only</h3>
+<p>Correct outputs against outputs whose error is a reviewed dot confusion (358 wrong outputs, 5 engines):</p>
+<div class="tbl"><table>
+  <tr><th>Method</th><th class="num">AUROC [95% CI]</th></tr>
+  <tr class="hl"><td><b>Sindhi-Jev v2</b></td><td class="num"><b>0.935</b> [0.908, 0.957]</td></tr>
+  <tr><td>MiniCPM-OCR Jev</td><td class="num">0.879 [0.842, 0.911]</td></tr>
+  <tr><td>OCR engine confidence</td><td class="num">0.817 [0.782, 0.851]</td></tr>
+  <tr><td>Agreement between engines</td><td class="num">0.813 [0.778, 0.846]</td></tr>
+  <tr><td>Text-only checker</td><td class="num">0.705 [0.648, 0.757]</td></tr>
+</table></div>
+<p>These intervals are per method, not paired. Real-word errors (239 outputs): v2 0.842, Jev 0.848, OCR confidence
+0.769, agreement 0.752, text-only 0.453.</p>
+
+<h3 id="letters">Letters and calibration</h3>
+<ul>
+  <li>The most suspicious letter is a wrong one in 84% of wrong outputs (95% for dot errors).</li>
+  <li>Letter F1 at the synthetic-validation threshold: 0.47 (agreement between engines: 0.66).</li>
+  <li>Calibration error (ECE) of <code>p_wrong</code>: 0.118.</li>
+</ul>
+
+<h2 id="ablations">Ablations on real word crops</h2>
+<p>Each variant was trained with the v2 recipe for 16,000 steps and removes one part.</p>
+<div class="tbl"><table>
+  <tr><th>Removed</th><th class="num">AUROC</th><th class="num">v2 − variant</th></tr>
+  <tr><td>nothing (shorter training)</td><td class="num">0.866</td><td class="num">+0.018 [−0.002, +0.039]</td></tr>
+  <tr><td>scan image</td><td class="num">0.747</td><td class="num">+0.137 [+0.097, +0.174]</td></tr>
+  <tr><td>per-letter head</td><td class="num">0.766</td><td class="num">+0.118 [+0.078, +0.157]</td></tr>
+  <tr><td>letter alignment</td><td class="num">0.796</td><td class="num">+0.088 [+0.054, +0.125]</td></tr>
+  <tr><td>rendered candidate</td><td class="num">0.822</td><td class="num">+0.062 [+0.036, +0.090]</td></tr>
+  <tr><td>real-word swaps in training</td><td class="num">0.823</td><td class="num">+0.061 [+0.034, +0.087]</td></tr>
+</table></div>
+<p>On synthetic data the render and the alignment looked almost free; on real scans every part matters.</p>
+
+<h2 id="real-lines">Real scans: full lines</h2>
+<div class="call bad"><b class="t">Negative result</b>On 74 full-line crops (370 outputs) v2 scores 0.458 [0.289,
+0.616], which is chance; Jev scores 0.910. Only 17 line outputs were fully correct, so the estimate is noisy, but v2
+is clearly worse. The model was trained on 1 to 4 words.</div>
+
+<h2 id="synthetic">Synthetic test sets (unseen fonts)</h2>
+<div class="tbl"><table>
+  <tr><th>Set</th><th class="num">v2</th><th class="num">Jev</th><th class="num">Text-only</th><th class="num">v2 letter F1</th></tr>
+  <tr><td>All error types (test_font)</td><td class="num">0.9974</td><td class="num">not run</td><td class="num">0.9521</td><td class="num">0.942</td></tr>
+  <tr><td>Real-word swaps (test_font_hard)</td><td class="num">0.9985</td><td class="num">0.8801</td><td class="num">0.8458</td><td class="num">0.933</td></tr>
+</table></div>
+
+<h2 id="selection">Choosing between engines</h2>
+<p>Keeping, for each crop, the OCR output that v2 trusts most gives CER 0.215 and 42.3% exact words. Always using
+Tesseract <code>snd</code> gives CER 0.181 and 44.3%; a perfect chooser would reach CER 0.131. Use the scores to decide
+what to review, not to pick text automatically.</p>
+<p>Source files: <code>results/real_main_v2_*.md</code>, <code>results/synth_main_v2.md</code>,
+<code>results/synth_jev.md</code>, <code>docs/final_real_results.md</code>.</p>

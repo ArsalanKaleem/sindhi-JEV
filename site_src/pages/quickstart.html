@@ -1,0 +1,32 @@
+<!-- title: Quick start | description: Check, repair and compare Sindhi OCR text in three commands. -->
+<h1>Quick start</h1>
+<p class="lede">Three commands, one word crop. You need the package and the model file from <a href="install.html">Install</a>.</p>
+
+<h2 id="crop">Make a word crop</h2>
+<p>Cut 1 to 4 printed Sindhi words from a page: a screenshot or a scanner crop is fine. Keep a little white space
+around the ink. Save it as <code>word.png</code>.</p>
+
+<h2 id="check">Check the OCR text</h2>
+<pre><code>sindhijev check word.png "ڪلوواٽ اهي"</code></pre>
+<pre><span class="label">Output</span><code>p_wrong=1.000  ڪلوواٽ اهي
+suspicious letters (positions [7]): ا</code></pre>
+<p><code>p_wrong</code> is the chance that the text does not match the image. The flagged letter is where the dots
+(or the madda) look wrong.</p>
+
+<h2 id="repair">Repair the dots</h2>
+<pre><code>sindhijev repair word.png "ڪلوواٽ اهي"</code></pre>
+<pre><span class="label">Output</span><code>ڪلوواٽ آهي
+  ڪلوواٽ اهي -> ڪلوواٽ آهي  p_wrong 1.000 -> 0.000</code></pre>
+
+<h2 id="pick">Pick the best of several outputs</h2>
+<pre><code>sindhijev pick word.png --cand "ڪلوواٽ اهي" --cand "ڪلوواٽ آهي"</code></pre>
+<pre><span class="label">Output</span><code>best: p_wrong=0.000  ڪلوواٽ آهي
+no letter flagged
+(from cand2)
+  other p_wrong=1.000  ڪلوواٽ اهي  (cand1)</code></pre>
+
+<div class="call"><b class="t">Prefer a browser?</b>The <a href="playground.html">Playground</a> does the same with
+drag-and-drop and a letter-by-letter heat map.</div>
+
+<p>These outputs are from a synthetic crop in a font the model never saw in training (Harmattan). Use
+<code>--json</code> on any command for machine-readable output.</p>

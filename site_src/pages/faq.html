@@ -1,0 +1,28 @@
+<!-- title: FAQ | description: Common questions. -->
+<h1>FAQ</h1>
+
+<h2 id="ocr">Is this an OCR engine?</h2>
+<p>No. It checks text that an OCR engine (or a person) produced. Use Tesseract, EasyOCR or any other engine to get the
+text, then check it.</p>
+
+<h2 id="name">Why "Jev"?</h2>
+<p>The project started from OpenBMB's MiniCPM-OCR Jev, a 2-billion-parameter model that scores OCR output against the
+image. Sindhi-Jev applies the same render-and-compare idea at 7 M parameters, for Sindhi dots, with a score for every
+letter. It is an independent project, not affiliated with OpenBMB.</p>
+
+<h2 id="gpu">Do I need a GPU?</h2>
+<p>No. The tool runs the ONNX model on CPU in about 20 ms per word crop.</p>
+
+<h2 id="data">Is my image uploaded anywhere?</h2>
+<p>Not by the package or the local playground: both run on your computer. If you use an online copy of the
+playground, the image goes to the server that hosts it.</p>
+
+<h2 id="other-scripts">Does it work for Urdu, Arabic or Persian?</h2>
+<p>Untested. The model was trained on Sindhi text and Sindhi dot confusions only.</p>
+
+<h2 id="licence">What is the licence?</h2>
+<p>Code and model: Apache-2.0. The bundled Noto Naskh Arabic font: SIL Open Font License. The real test images are
+not redistributed where the source does not allow it; see <code>docs/DATA_LICENSES.md</code>.</p>
+
+<h2 id="cite">How do I cite it?</h2>
+<p>A paper is in preparation. Until then, cite the GitHub repository.</p>

@@ -1,0 +1,61 @@
+<!-- title: Playground | description: Try the checker in the browser: check, repair or compare OCR text for a word crop. -->
+<h1>Playground</h1>
+<p class="lede">Drop a word crop, type its OCR text, and see the score letter by letter.</p>
+
+<div class="call" id="api-status"><span class="spin"></span> Connecting to the checker…</div>
+
+<div class="pg">
+  <div class="seg" role="tablist">
+    <button class="on" data-mode="check">Check</button>
+    <button data-mode="repair">Repair</button>
+    <button data-mode="pick">Compare</button>
+  </div>
+
+  <div class="pg-grid">
+    <div>
+      <label class="f">Word crop</label>
+      <div class="drop" id="drop" tabindex="0">
+        <div id="dropInner">Drop an image, click to choose, or paste (Ctrl+V)<br><small>1–4 printed Sindhi words</small></div>
+      </div>
+      <input type="file" id="file" accept="image/*" hidden>
+      <label class="f">Or a synthetic sample <span class="muted">(fonts the model never trained on)</span></label>
+      <div class="samples" id="samples"></div>
+      <div class="answer" id="answer" hidden></div>
+    </div>
+    <div>
+      <label class="f" id="textLabel">OCR text</label>
+      <div id="single"><textarea id="text" class="ar" rows="2" placeholder="OCR output"></textarea></div>
+      <div id="multi" class="cands" hidden>
+        <input type="text" class="ar cand" placeholder="candidate 1">
+        <input type="text" class="ar cand" placeholder="candidate 2">
+        <input type="text" class="ar cand" placeholder="candidate 3 (optional)">
+      </div>
+      <div class="btns" style="margin-top:12px">
+        <button class="btn" id="go">Check text</button>
+        <button class="btn sec" id="reset">Clear</button>
+      </div>
+      <p class="muted small" id="modeHint">Scores how likely the text is wrong and which letters look suspicious.</p>
+    </div>
+  </div>
+
+  <div id="out" class="pg-out" hidden></div>
+</div>
+
+<h2 id="reading">Reading the result</h2>
+<ul>
+  <li><b>Percentage:</b> chance the text does not match the crop. Treat it as a ranking score (see
+  <a href="limitations.html#probability">Limitations</a>).</li>
+  <li><b>Letter tiles:</b> darker red means more suspicious; a red outline means flagged (score above 0.817).</li>
+  <li><b>Scan and render:</b> the render is the text drawn the way the model sees it. Differences in dots between the
+  two are what the model looks for.</li>
+</ul>
+
+<h2 id="run-locally">Run it locally</h2>
+<p>The playground needs the checker service. On your own computer:</p>
+<pre><code>python tools/demo/server.py</code></pre>
+<p>Then open <a href="http://localhost:8770/playground.html">http://localhost:8770/playground.html</a>. Images stay on
+your computer.</p>
+
+<link rel="stylesheet" href="assets/playground.css">
+<script src="assets/config.js"></script>
+<script src="assets/playground.js"></script>

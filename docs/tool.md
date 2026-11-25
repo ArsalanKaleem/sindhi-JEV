@@ -13,7 +13,7 @@ sindhijev pick word.png --cand "..." --cand "..."  [--tesseract]   # best of sev
 
 Python: `from sindhijev.tool import Checker; Checker().check("word.png", "text")`.
 
-**Visual demo (local only):** `python tools/demo/server.py`, then open http://localhost:8770. Upload or paste a word crop (or pick a synthetic sample), type the OCR text, and use Check / Repair / Compare. Nothing leaves the computer; the samples are synthetic (the real test set is never served).
+**Docs site and playground (local only):** `python site_src/build.py`, then `python tools/demo/server.py`, and open http://localhost:8770 (playground: /playground.html). Publishing steps: `docs/publishing.md`. Upload or paste a word crop (or pick a synthetic sample), type the OCR text, and use Check / Repair / Compare. Nothing leaves the computer; the samples are synthetic (the real test set is never served).
 
 ## What the numbers mean (from the frozen real test set, `docs/final_real_results.md`)
 - **Use it on word crops (1–4 words).** On real word crops it ranks wrong OCR outputs above correct ones with

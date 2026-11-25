@@ -1,0 +1,48 @@
+<!-- title: How it works | description: Render the OCR text, compare it with the scan, score every letter. -->
+<h1>How it works</h1>
+<p class="lede">Render the OCR text, look at the scan and the render together, and score every letter.</p>
+
+<figure class="diagram">
+  <div class="flow">
+    <div class="box"><b>Scan</b>word crop, height 48 px</div>
+    <div class="arr">→</div>
+    <div class="box"><b>Two CNN encoders</b>scan tokens + render tokens<br>(one token per 4 px of width)</div>
+    <div class="arr">→</div>
+    <div class="box"><b>Transformer decoder</b>one query per letter + one for the whole text</div>
+  </div>
+  <div class="flow" style="margin-top:10px">
+    <div class="box"><b>OCR text</b>rendered with HarfBuzz in Noto Naskh Arabic</div>
+    <div class="arr">↗</div>
+    <div class="box"><b>Letter alignment</b>each letter's query starts from the render tokens under that letter</div>
+    <div class="arr">→</div>
+    <div class="box"><b>Outputs</b>p(text wrong)<br>p(letter wrong) for every letter</div>
+  </div>
+  <figcaption>The model is 7.1 M parameters: two 4-block CNN encoders, a 4-layer transformer decoder (width 256, 8 heads).</figcaption>
+</figure>
+
+<h2 id="idea">The idea</h2>
+<p>An OCR engine gives text. Sindhi-Jev draws that text (the <em>render</em>) and asks: does the scan look like this
+drawing, letter by letter? A dot error changes only a few pixels, so the model gets both pictures plus the letter
+sequence, and each letter's query is tied to the part of the render where that letter is drawn.</p>
+
+<h2 id="training-data">Training data</h2>
+<p>All training data is synthetic, generated from Sindhi Wikipedia text:</p>
+<ul>
+  <li><b>Scans:</b> the true text drawn in 9 open-licence Naskh-style fonts, then degraded: skew, paper texture, ink
+  spread, blur, noise, JPEG, slivers of neighbouring lines, bleed-through, uneven lighting and binarisation.</li>
+  <li><b>Candidates:</b> half are correct; the rest have dot swaps from a confusion set reviewed by a native speaker
+  (for example <span class="ar">ن ↔ ڻ</span>, <span class="ar">ب ↔ ٻ</span>), substitutions, deletions or insertions.</li>
+  <li><b>Real-word swaps:</b> dot swaps that turn one dictionary word into another. A spell checker cannot catch these,
+  so they force the model to use the image.</li>
+</ul>
+<p>Fonts are split three ways: 9 for training, Mirza for model selection, and Harmattan and Noto Kufi Arabic only for
+the final synthetic test.</p>
+
+<h2 id="training">Training</h2>
+<p>Binary cross-entropy on the whole-text label and on each letter's label, 60,000 steps of batch 128, mixed
+precision on one Kaggle T4 (9.7 GPU hours for the reported model). The reported model is the checkpoint at the end of
+the schedule, not the best one on any test set.</p>
+
+<h2 id="evaluation">Evaluation</h2>
+<p>The real test set was cut from 14 printed Sindhi sources, labelled by hand, frozen with SHA-256 hashes, and used
+exactly once for the final results. Every access is logged in the repository.</p>

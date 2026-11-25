@@ -1,0 +1,46 @@
+<!-- title: Reproduce | description: Rebuild the data, train, and evaluate. -->
+<h1>Reproduce</h1>
+<p class="lede">The repository holds every script, config, result file and decision. Training needs one GPU; all
+evaluation runs on CPU.</p>
+
+<h2 id="setup">Set up</h2>
+<pre><code>git clone https://github.com/ArsalanKaleem/sindhi-JEV.git
+cd sindhi-JEV
+python -m venv .venv
+.venv\Scripts\activate          # Windows; use source .venv/bin/activate elsewhere
+pip install -r requirements.lock.txt
+pytest -q</code></pre>
+
+<h2 id="data">Synthetic data</h2>
+<pre><code>python scripts/prepare_text.py --corpus sd_wiki.txt     # Sindhi Wikipedia spans, sentence-hash splits
+python scripts/build_lexicon.py                         # train-split word list for real-word swaps
+python scripts/build_pairs.py --config configs/data_v3.json --sets val val_hard val_font_hard test_iid test_font test_hard test_font_hard</code></pre>
+<p><code>sd_wiki.txt</code> is a plain-text dump of Sindhi Wikipedia (CC BY-SA); see <code>docs/DATA_LICENSES.md</code>.</p>
+
+<h2 id="train">Train</h2>
+<p>Training runs on Kaggle (one T4) with <code>kaggle/train.ipynb</code> and the bundle from
+<code>python kaggle/make_bundle.py</code>; locally:</p>
+<pre><code>python scripts/train.py --config configs/model_v2.json --out runs/main_v2</code></pre>
+<p>Ablations: <code>configs/ablations_v1.json</code> with <code>kaggle/ablations.ipynb</code>.</p>
+
+<h2 id="evaluate">Evaluate</h2>
+<pre><code>python scripts/evaluate.py --ckpt runs/main_v2/last.pt --name main_v2      # synthetic sets
+python scripts/ablation_table.py                                           # ablations vs reference
+python scripts/jev/eval_jev.py --results runs/jev                          # Jev zero-shot (synthetic)</code></pre>
+<div class="call warn"><b class="t">The real test set</b><code>scripts/real/eval_real.py</code> refuses to run
+without <code>--final</code> and refuses if any frozen file changed. It was run once per set for the reported results;
+the access log is <code>docs/real_set_access_log.md</code>.</div>
+
+<h2 id="budget">Compute used</h2>
+<div class="tbl"><table>
+  <tr><th>Run</th><th class="num">GPU hours (T4)</th></tr>
+  <tr><td>v1 model (incl. debugging)</td><td class="num">~8.2</td></tr>
+  <tr><td>v2 model (reported)</td><td class="num">9.7</td></tr>
+  <tr><td>6 ablations (16k steps each)</td><td class="num">14.6</td></tr>
+  <tr><td>MiniCPM-OCR Jev baseline</td><td class="num">1.0</td></tr>
+  <tr><td><b>Total</b></td><td class="num"><b>~33.8 of a 60 h budget</b></td></tr>
+</table></div>
+
+<h2 id="decisions">Decisions</h2>
+<p>Every choice that could affect results (data versions, adoption rules, thresholds, deviations from the labelling
+protocol) is logged with its date in <code>docs/decisions.md</code>.</p>

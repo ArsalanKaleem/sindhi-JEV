@@ -1,0 +1,43 @@
+<!-- title: Limitations | description: What the checker does not do, and how sure the numbers are. -->
+<h1>Limitations</h1>
+<p class="lede">Read this before relying on the scores.</p>
+
+<h2 id="lines">Word crops only</h2>
+<p>The model was trained on crops of 1 to 4 words. On real full lines it is at chance (AUROC 0.458). Cut lines into
+words first.</p>
+
+<h2 id="print">Printed Naskh-style text only</h2>
+<p>Training used 9 printed Naskh-style fonts with simulated scan damage. Handwriting, Nastaliq and decorative
+display type are untested; expect poor results.</p>
+
+<h2 id="probability">The percentage is a ranking score</h2>
+<p><code>p_wrong</code> is temperature-scaled on synthetic data. On real words its calibration error (ECE) is 0.118,
+so a value of 0.80 does not mean exactly 80%. Sorting by it works well: reviewing the 30% most suspicious outputs
+catches about 39% of the wrong ones, against 30% for random review. Most real outputs in the test set are wrong
+(74%), which limits how much any ranking can gain here.</p>
+
+<h2 id="letters">Letter flags are a hint</h2>
+<p>The top flagged letter is right 84% of the time on wrong outputs, but the full set of flags has F1 0.47. Look at
+the top flag first.</p>
+
+<h2 id="selection">It does not choose text better than the best engine</h2>
+<p><code>pick</code> ranks candidates by the model's score. On real words this did not beat always using Tesseract
+<code>snd</code> (CER 0.215 vs 0.181).</p>
+
+<h2 id="repair">Repair is measured on synthetic data only</h2>
+<p><code>repair</code> fixed 98% of real-word dot swaps in training fonts and 87% in unseen fonts, breaking 1 to 2
+correct texts in 2,000. It has not been measured on real scans.</p>
+
+<h2 id="encoding">Encoding variants are not errors</h2>
+<p><span class="ar">ه / ھ / ہ</span>, <span class="ar">ي / ی / ى</span> and <span class="ar">ڪ / ک / ك</span> code-point
+differences are reported separately and do not count as errors in the results.</p>
+
+<h2 id="batching">Batching</h2>
+<p>The model's CNN uses batch normalisation. In a padded batch, padding becomes non-zero after normalisation and
+leaks into the last real tokens, which is the start of a right-to-left word. The tool therefore scores one crop per
+forward pass. All reported results were computed in batches of 64; on the synthetic test sets this changes AUROC by at
+most 0.0001.</p>
+
+<h2 id="size">Test-set size</h2>
+<p>The real set has 336 word crops and 74 line crops from 14 sources. Confidence intervals are wide for small subsets
+(for example the 239 real-word errors), and the line result rests on 17 correct outputs.</p>

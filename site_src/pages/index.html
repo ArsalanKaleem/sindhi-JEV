@@ -1,0 +1,49 @@
+<!-- title: Overview | description: Sindhi-Jev checks Sindhi OCR text against the scan and flags dot errors letter by letter. -->
+<h1>Sindhi-Jev</h1>
+<p class="lede">A small model that checks whether Sindhi OCR text matches the scanned image, and points to the
+letters whose dots look wrong. It runs on a normal CPU.</p>
+
+<div class="btns">
+  <a class="btn" href="quickstart.html">Get started</a>
+  <a class="btn sec" href="playground.html">Try the playground</a>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="v">0.94</div><div class="k">AUROC on real dot errors (word crops)</div></div>
+  <div class="stat"><div class="v">7.1 M</div><div class="k">parameters, ~30 MB on disk</div></div>
+  <div class="stat"><div class="v">~20 ms</div><div class="k">per word crop on a laptop CPU</div></div>
+</div>
+
+<h2 id="why">Why it exists</h2>
+<p>Sindhi letters differ by dots: <span class="ar">ب ٻ ڀ پ</span>, <span class="ar">ن ڻ</span>,
+<span class="ar">ج ڄ</span>, <span class="ar">د ڏ ڌ</span>. OCR engines often get the shape right and the dots wrong,
+and many of those mistakes are still real words, so a spell checker cannot see them. Sindhi-Jev looks at the scan and
+the text together and tells you which outputs to review, and which letters to look at first.</p>
+
+<h2 id="what-you-get">What you get</h2>
+<div class="cards">
+  <a class="card" href="cli.html"><h3>check</h3><p>Probability that the OCR text is wrong, plus the suspicious letters.</p></a>
+  <a class="card" href="cli.html#repair"><h3>repair</h3><p>Tries dot variants of the suspicious letters and keeps one only if it clearly wins.</p></a>
+  <a class="card" href="cli.html#pick"><h3>pick</h3><p>Ranks several OCR outputs for the same crop, most trustworthy first.</p></a>
+</div>
+
+<h2 id="at-a-glance">Results at a glance</h2>
+<p>Measured once on a frozen, hand-labelled set of real scans (336 word crops from 14 printed sources, 5 Tesseract
+models). AUROC is how well a method ranks wrong OCR outputs above correct ones (1.0 is perfect, 0.5 is chance).</p>
+<div class="tbl"><table>
+  <tr><th>Method</th><th class="num">All errors</th><th class="num">Dot errors</th></tr>
+  <tr class="hl"><td><b>Sindhi-Jev v2</b> (7 M, this project)</td><td class="num">0.884</td><td class="num"><b>0.935</b></td></tr>
+  <tr><td>MiniCPM-OCR Jev (2 B, zero-shot)</td><td class="num">0.885</td><td class="num">0.879</td></tr>
+  <tr><td>OCR engine confidence</td><td class="num">0.835</td><td class="num">0.817</td></tr>
+  <tr><td>Agreement between engines</td><td class="num">0.819</td><td class="num">0.813</td></tr>
+  <tr><td>Text-only checker (char LM + dictionary)</td><td class="num">0.714</td><td class="num">0.705</td></tr>
+</table></div>
+<div class="call warn"><b class="t">Word crops only</b>On real full lines the model is at chance (0.46). See
+<a href="limitations.html">Limitations</a>.</div>
+
+<h2 id="next">Next steps</h2>
+<ul>
+  <li><a href="install.html">Install</a> the package and the model file.</li>
+  <li>Run your first check in the <a href="quickstart.html">Quick start</a>.</li>
+  <li>Read <a href="how-it-works.html">How it works</a> and the full <a href="results.html">Results</a>.</li>
+</ul>

@@ -1,0 +1,33 @@
+<!-- title: Install | description: Install the sindhijev package and the ONNX model file. -->
+<h1>Install</h1>
+<p class="lede">The tool needs Python 3.10 or newer and about 100 MB of disk. No GPU, no PyTorch.</p>
+
+<h2 id="package">1. Install the package</h2>
+<p>From a clone of the repository:</p>
+<pre><code>git clone https://github.com/ArsalanKaleem/sindhi-JEV.git
+cd sindhi-JEV
+pip install -e .</code></pre>
+<p>This installs the <code>sindhijev</code> command and its dependencies: <code>onnxruntime</code>, <code>numpy</code>,
+<code>opencv-python-headless</code>, <code>uharfbuzz</code> and <code>freetype-py</code>.</p>
+<div class="call"><b class="t">PyPI</b>When the package is published, this becomes <code>pip install sindhijev</code>.</div>
+
+<h2 id="model">2. Get the model file</h2>
+<p>The checker uses one ONNX file, <code>sindhijev_v2.onnx</code> (about 30 MB), and its model card
+<code>sindhijev_v2.json</code> (temperature and letter threshold). Point the tool at them with an environment variable:</p>
+<pre><span class="label">PowerShell</span><code>$env:SINDHIJEV_WEIGHTS = "C:\path\to\sindhijev_v2.onnx"</code></pre>
+<pre><span class="label">bash</span><code>export SINDHIJEV_WEIGHTS=/path/to/sindhijev_v2.onnx</code></pre>
+<p>Keep the <code>.json</code> next to the <code>.onnx</code>. Without it the tool still runs, with temperature 1 and
+letter threshold 0.5.</p>
+<p>To build the file yourself from the training checkpoint:</p>
+<pre><code>python scripts/calibrate.py --run main_v2
+python scripts/export_onnx.py --ckpt runs/main_v2/last.pt --out dist/sindhijev_v2.onnx</code></pre>
+<p>The export checks the ONNX outputs against PyTorch and stops if they differ by more than 1e-3. The published model
+differs by less than 2e-5.</p>
+
+<h2 id="check">3. Check the install</h2>
+<pre><code>sindhijev --help</code></pre>
+
+<h2 id="tesseract">Optional: Tesseract</h2>
+<p><code>sindhijev pick --tesseract</code> runs your installed Tesseract models (<code>snd</code>, <code>urd</code>,
+<code>ara</code>, <code>fas</code>) on the crop and ranks their outputs. Install Tesseract with the Sindhi language
+data, and put it on <code>PATH</code> or pass its path: <code>--tesseract "C:\Program Files\Tesseract-OCR\tesseract.exe"</code>.</p>
