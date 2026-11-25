@@ -64,3 +64,9 @@ def test_pick_orders_by_p_wrong_and_flags_letters():
 def test_packaged_confusion_set_matches_data():
     assert (ROOT / "src" / "sindhijev" / "assets" / "confusion_set.json").read_bytes() == \
         (ROOT / "data" / "confusion_set.json").read_bytes()
+
+
+def test_packaged_model_card_has_calibration():
+    import json
+    card = json.loads((ROOT / "src" / "sindhijev" / "assets" / "sindhijev_v2.json").read_text(encoding="utf-8"))
+    assert 0.5 < card["temperature"] < 3 and 0 < card["char_threshold"] < 1 and card["model_cfg"]["img_height"] == 48

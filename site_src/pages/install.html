@@ -11,17 +11,17 @@ pip install -e .</code></pre>
 <code>opencv-python-headless</code>, <code>uharfbuzz</code> and <code>freetype-py</code>.</p>
 <div class="call"><b class="t">PyPI</b>When the package is published, this becomes <code>pip install sindhijev</code>.</div>
 
-<h2 id="model">2. Get the model file</h2>
-<p>The checker uses one ONNX file, <code>sindhijev_v2.onnx</code> (about 30 MB), and its model card
-<code>sindhijev_v2.json</code> (temperature and letter threshold). Point the tool at them with an environment variable:</p>
+<h2 id="model">2. The model file</h2>
+<p>Nothing to do: on first use the tool downloads <code>sindhijev_v2.onnx</code> (about 30 MB) from the project's GitHub
+release into <code>~/.cache/sindhijev</code> and checks its SHA-256. The calibration (temperature and letter threshold)
+ships inside the package.</p>
+<p>To use a local copy instead (offline machines, or your own export), point the tool at it:</p>
 <pre><span class="label">PowerShell</span><code>$env:SINDHIJEV_WEIGHTS = "C:\path\to\sindhijev_v2.onnx"</code></pre>
 <pre><span class="label">bash</span><code>export SINDHIJEV_WEIGHTS=/path/to/sindhijev_v2.onnx</code></pre>
-<p>Keep the <code>.json</code> next to the <code>.onnx</code>. Without it the tool still runs, with temperature 1 and
-letter threshold 0.5.</p>
 <p>To build the file yourself from the training checkpoint:</p>
 <pre><code>python scripts/calibrate.py --run main_v2
 python scripts/export_onnx.py --ckpt runs/main_v2/last.pt --out dist/sindhijev_v2.onnx</code></pre>
-<p>The export checks the ONNX outputs against PyTorch and stops if they differ by more than 1e-3. The published model
+<p>The export checks the ONNX outputs against PyTorch and stops if they differ by more than 1e-3. The released model
 differs by less than 2e-5.</p>
 
 <h2 id="check">3. Check the install</h2>
