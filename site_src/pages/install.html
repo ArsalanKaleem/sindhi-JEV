@@ -3,13 +3,13 @@
 <p class="lede">The tool needs Python 3.10 or newer and about 100 MB of disk. No GPU, no PyTorch.</p>
 
 <h2 id="package">1. Install the package</h2>
-<p>From a clone of the repository:</p>
+<pre><code>pip install sindhijev</code></pre>
+<p>This installs the <code>sindhijev</code> command and its dependencies: <code>onnxruntime</code>, <code>numpy</code>,
+<code>opencv-python-headless</code>, <code>uharfbuzz</code> and <code>freetype-py</code>
+(<a href="https://pypi.org/project/sindhijev/">PyPI page</a>). To work on the code instead:</p>
 <pre><code>git clone https://github.com/ArsalanKaleem/sindhi-JEV.git
 cd sindhi-JEV
 pip install -e .</code></pre>
-<p>This installs the <code>sindhijev</code> command and its dependencies: <code>onnxruntime</code>, <code>numpy</code>,
-<code>opencv-python-headless</code>, <code>uharfbuzz</code> and <code>freetype-py</code>.</p>
-<div class="call"><b class="t">PyPI</b>When the package is published, this becomes <code>pip install sindhijev</code>.</div>
 
 <h2 id="model">2. The model file</h2>
 <p>Nothing to do: on first use the tool downloads <code>sindhijev_v2.onnx</code> (about 30 MB) from the project's GitHub

@@ -243,3 +243,11 @@ Jev GPU 1.04 h of 2; total ~33.75 / 60.
   mentions lines; `requirements.lock.txt` no longer pins `sindhinorm` to a local path (only `prepare_text.py` needs it);
   review-cost table added from stored results (no new real-set access). Issues #7 and #11 closed.
 - Correction (same day): `sindhinorm` is on PyPI (0.1.0, 0.2.0); the lock file now pins sindhinorm==0.1.0, the version used to build the spans.
+
+## 2026-11-26: v0.1.0 released
+
+GitHub release v0.1.0 (model, model card, wheel, sdist) and PyPI `sindhijev` 0.1.0 (uploaded by the author; files
+byte-identical to the checked build). Verified from a fresh environment: `pip install sindhijev` pulls only
+onnxruntime, numpy, opencv-python-headless, uharfbuzz, freetype-py; the model downloads from the release with a
+matching SHA-256; check / pick give the expected results. GPU total recomputed from the session logs: ~33.6 / 60
+(v1 ~8.2, v2 9.74, ablations 14.59, Jev 1.03); earlier running totals had drifted to 33.75 by rounding.
