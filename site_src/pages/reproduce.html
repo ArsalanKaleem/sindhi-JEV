@@ -15,7 +15,9 @@ pytest -q</code></pre>
 <pre><code>python scripts/prepare_text.py --corpus sd_wiki.txt     # Sindhi Wikipedia spans, sentence-hash splits
 python scripts/build_lexicon.py                         # train-split word list for real-word swaps
 python scripts/build_pairs.py --config configs/data_v3.json --sets val val_hard val_font_hard test_iid test_font test_hard test_font_hard</code></pre>
-<p><code>sd_wiki.txt</code> is a plain-text dump of Sindhi Wikipedia (CC BY-SA); see <code>docs/DATA_LICENSES.md</code>.</p>
+<p><code>sd_wiki.txt</code> is a plain-text dump of Sindhi Wikipedia (CC BY-SA); see <code>docs/DATA_LICENSES.md</code>.
+<code>prepare_text.py</code> also needs <code>sindhinorm</code>, the author's Sindhi normaliser from a separate project,
+which is not published yet. Training and evaluation do not need it.</p>
 
 <h2 id="train">Train</h2>
 <p>Training runs on Kaggle (one T4) with <code>kaggle/train.ipynb</code> and the bundle from

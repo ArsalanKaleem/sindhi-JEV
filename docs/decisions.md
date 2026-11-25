@@ -232,3 +232,13 @@ Jev GPU 1.04 h of 2; total ~33.75 / 60.
   forward pass; the real-set results (batch 64) are NOT re-run (it would be a second access); stated as a limitation.
 - **Dot repair** (`results/dot_repair.md`): margin 0.6 chosen on val_hard; test_hard 980/1000 fixed, 1 broken;
   test_font_hard 869/1000, 2 broken. Synthetic only; not run on the real set (would need a new pre-registered run).
+
+## 2026-11-26: published; sweep
+
+- Hugging Face Space live (Gradio SDK; Docker is paid on this account; runs on ZeroGPU hardware with a never-called
+  `@spaces.GPU` placeholder, model on CPU): https://huggingface.co/spaces/ArsalanKaleem/sindhijev. Checked via its API.
+- Docs on GitHub Pages (manual workflow, custom domain of the account, HTTPS enforced):
+  https://arsalankaleem.me/sindhi-JEV/ ; set as the repository website.
+- Sweep fixes: README now links docs and demo and states the word-crop scope; repository description no longer
+  mentions lines; `requirements.lock.txt` no longer pins `sindhinorm` to a local path (only `prepare_text.py` needs it);
+  review-cost table added from stored results (no new real-set access). Issues #7 and #11 closed.

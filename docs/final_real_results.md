@@ -44,6 +44,20 @@ On synthetic data the render and the alignment looked nearly free; on real scans
   `tess_snd`** (CER 0.181, exact 0.443); oracle CER 0.131. Jev selection: CER 0.234.
 - Calibration: ECE 0.118 (7 engines: 0.108).
 
+### Review cost (words, 5 engines; computed 2026-11-26 from the stored results, no new access)
+Reviewing the outputs v2 finds most suspicious first. Minutes use the median time to label one word crop in pass 1
+(13 s), as a proxy for reviewing one output.
+
+| reviewed | outputs | minutes | wrong outputs caught (of 1,243) | v2 | Jev | OCR conf. | voting | random |
+|---|---|---|---|---|---|---|---|---|
+| 10% | 168 | 36 | 165 | 13.3% | 13.1% | 13.0% | 9.6% | 10% |
+| 20% | 336 | 73 | 324 | 26.1% | 26.6% | 25.9% | 21.4% | 20% |
+| 30% | 504 | 109 | 484 | 38.9% | 39.3% | 38.9% | 33.8% | 30% |
+
+74% of these outputs are wrong, so reviewing 10% can catch at most 13.5% of the errors: v2, Jev and OCR confidence
+are all near that ceiling (98% of v2's top 10% are wrong). On this set the ranking cannot separate them; the
+difference shows in AUROC and on dot errors.
+
 ## Full lines (74 crops): negative result
 v2 AUROC 0.458 [0.289, 0.616] on 370 outputs (7 engines: 0.489), i.e. chance; Jev 0.910; OCR confidence 0.781.
 Only 17 of 370 line outputs are fully correct, so the estimate is noisy, but v2 is clearly below Jev (paired

@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "site_src"
 OUT = ROOT / "site"
 REPO = "https://github.com/ArsalanKaleem/sindhi-JEV"
+SPACE = "https://huggingface.co/spaces/ArsalanKaleem/sindhijev"
 
 NAV = [
     ("Get started", [("index", "Overview"), ("install", "Install"), ("quickstart", "Quick start")]),
@@ -54,6 +55,7 @@ LAYOUT = """<!doctype html>
     <a href="index.html"{on_docs}>Docs</a>
     <a href="playground.html"{on_play}>Playground</a>
     <a href="results.html"{on_res}>Results</a>
+    <a href="{space}" target="_blank" rel="noopener">Live demo ↗</a>
   </nav>
   <span class="sp"></span>
   <a class="iconbtn" href="{repo}" aria-label="GitHub repository" title="GitHub">{gh}</a>
@@ -125,7 +127,7 @@ def main():
         on = lambda c: ' class="on"' if c else ""  # noqa: E731
         doc = LAYOUT.format(title=html.escape(meta.get("title", TITLES[slug])),
                             desc=html.escape(meta.get("description", "")), menu=ICON_MENU, sun=ICON_SUN, gh=ICON_GH,
-                            repo=REPO, side=side(slug), section=section_of(slug), body=body.strip(),
+                            repo=REPO, space=SPACE, side=side(slug), section=section_of(slug), body=body.strip(),
                             pager=pager(slug), on_docs=on(slug not in ("playground", "results")),
                             on_play=on(slug == "playground"), on_res=on(slug == "results"))
         (OUT / f"{slug}.html").write_text(doc, encoding="utf-8")
