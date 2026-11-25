@@ -191,3 +191,20 @@ renders. 4,000/4,000 items scored, 0 failures, ~0.12 s/item.
 Jev transfers partly to Sindhi (above the text-only checker, despite zh/en training) but is far below the 7M
 task-specific model on dot-level real-word errors. Jev gives no per-letter output. Real-set scoring follows in #5.
 Jev GPU: 0.18 (debug) + 0.12 (failed run, client path bug) + 0.39 = 0.69 h of its 2 h. GPU total ~33.4 / 60.
+
+## 2026-11-25: blind relabel, line crops (pass 2)
+
+8 line crops (`data/real/lines/relabel_queue.txt`) relabelled blind on 2026-11-25 -> `data/real/lines/gold_pass2.csv`;
+report `data/real/lines/agreement.json`. **Protocol deviation:** done 5 days after pass 1 (2026-11-20) instead of
+the planned 7 (author's choice); to be stated in the paper. Typed with the labeller's new Sindhi keyboard
+(canonical-letter fix on), so raw and encoding-folded numbers barely differ.
+| | raw | folded |
+|---|---|---|
+| status agreement | 1.00 | 1.00 |
+| exact gold text | 0.25 | 0.25 |
+| mean CER | 0.104 | 0.093 |
+| error-label kappa (40 engine outputs) | 1.00 | 1.00 |
+| letter-mark F1 | 0.91 | 0.92 |
+Most differences are harakat added in pass 2 and punctuation. 3 lines differ in letters (bcp1873_p0016_v2L01 ڎ/ڏ,
+mehran1959_p0123_v2L02 ب/ڀ and extra ه, mehran1959_p0134_v2L02 extra ه and ں).
+**Adjudication (author, 2026-11-25): pass 1 kept for all.** Line gold unchanged, line set stays frozen. Issue #4 done.

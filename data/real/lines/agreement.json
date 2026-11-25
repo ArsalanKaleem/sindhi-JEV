@@ -1,0 +1,22 @@
+{
+ "crops_both_passes": 8,
+ "status_agreement": 1.0,
+ "crops_ok_both": 8,
+ "gold_exact_match": 0.25,
+ "gold_mean_cer": 0.10391578334120681,
+ "candidates_compared": 40,
+ "seq_label_kappa": 1.0,
+ "seq_label_agreement": 1.0,
+ "char_mark_f1_pass2_vs_pass1": 0.9085106382978724,
+ "encoding_folded": {
+  "crops_both_passes": 8,
+  "status_agreement": 1.0,
+  "crops_ok_both": 8,
+  "gold_exact_match": 0.25,
+  "gold_mean_cer": 0.09278166985547931,
+  "candidates_compared": 40,
+  "seq_label_kappa": 1.0,
+  "seq_label_agreement": 1.0,
+  "char_mark_f1_pass2_vs_pass1": 0.9225941422594143
+ }
+}
