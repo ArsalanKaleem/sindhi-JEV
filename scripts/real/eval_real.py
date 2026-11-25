@@ -44,6 +44,13 @@ from train import predict  # noqa: E402
 BASELINES = ["ocr_conf", "text", "voting"]
 
 
+def set_name(root):
+    """words / lines / words_addendum / lines_addendum (both addenda are folders named addendum_v1)."""
+    parts = Path(root).resolve().parts
+    base = "lines" if "lines" in parts else ("words" if "real" in parts else Path(root).name)
+    return base + ("_addendum" if "addendum_v1" in parts else "")
+
+
 def encoding_groups():
     data = json.loads((ROOT / "data" / "confusion_set.json").read_text(encoding="utf-8"))
     return {g["id"] for g in data["groups"] if g["kind"] == "encoding"}
@@ -76,13 +83,14 @@ def main():
     a = ap.parse_args()
     extras = dict(x.split("=", 1) for x in a.extra)
     root = Path(a.root)
+    set_tag = set_name(root)
     rows = R.load_real(final=a.final, root=root)  # raises unless --final and hashes match FROZEN.json
     log = ROOT / "docs" / "real_set_access_log.md"
     real_root = (ROOT / "data" / "real").resolve()
     is_real = root.resolve() == real_root or real_root in root.resolve().parents
     with open(log if is_real else Path.home() / ".sindhijev_test_access.log", "a", encoding="utf-8") as f:
         f.write(f"- {datetime.datetime.now():%Y-%m-%d %H:%M} eval_real --final name={a.name} ckpt={a.ckpt} "
-                f"root={root.name} extras={sorted(extras)} jev={bool(a.jev)}\n")
+                f"root={set_tag} extras={sorted(extras)} jev={bool(a.jev)}\n")
 
     dev = torch.device(a.device)
     model, st = load_model(a.ckpt, dev)
@@ -192,10 +200,10 @@ def main():
     res["model_ece"] = ece([r["seq_y"] for r in out_recs], [r["model_seq"] for r in out_recs])
     od = ROOT / "results"
     od.mkdir(exist_ok=True)
-    tag = f"{a.name}_{root.name}"
+    tag = f"{a.name}_{set_tag}"
     (od / f"real_{tag}.json").write_text(json.dumps(res, indent=1, ensure_ascii=False, default=str), encoding="utf-8")
     f3 = lambda v: "n/a" if v is None else f"{v:.3f}"  # noqa: E731
-    lines = [f"# Real-set results: {a.name} on {root.name} ({len(out_recs)} candidates, "
+    lines = [f"# Real-set results: {a.name} on {set_tag} ({len(out_recs)} candidates, "
              f"{len({r['cluster'] for r in out_recs})} crops)", "",
              "| method | AUROC [95% CI] | AUPRC | char F1 | top-1 loc | recall@10% | recall@20% | recall@30% |",
              "|---|---|---|---|---|---|---|---|"]

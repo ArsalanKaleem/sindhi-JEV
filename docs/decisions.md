@@ -208,3 +208,15 @@ the planned 7 (author's choice); to be stated in the paper. Typed with the label
 Most differences are harakat added in pass 2 and punctuation. 3 lines differ in letters (bcp1873_p0016_v2L01 ڎ/ڏ,
 mehran1959_p0123_v2L02 ب/ڀ and extra ه, mehran1959_p0134_v2L02 extra ه and ں).
 **Adjudication (author, 2026-11-25): pass 1 kept for all.** Line gold unchanged, line set stays frozen. Issue #4 done.
+
+## 2026-11-25: final real-set evaluation (run once)
+
+Summary and tables: `docs/final_real_results.md`. One `eval_real.py --final` run per set (words, lines, and both
+EasyOCR addenda), all methods at once: v2, v1, six ablations, Jev, OCR confidence, text-only, voting.
+The words-addendum run crashed in data preparation before any score existed (a space with no render x-range in
+EasyOCR output); fixed with `data.fill_ranges` (does not change the other three sets) and re-run once. Logged.
+Results (words, 5 engines): v2 0.884 = Jev 0.885 > OCR conf 0.835 > voting 0.819 > text 0.714; dot errors only:
+v2 0.935, Jev 0.879. Lines: v2 0.458 (fails), Jev 0.910. Engine selection by v2 does not beat `tess_snd`.
+Decisions: v2 stays the reported model (no change after seeing real data). The tool is scoped to word crops.
+Line-level training is recorded as future work, not done on this test set. Issues #5 and #3 are done.
+Jev GPU 1.04 h of 2; total ~33.75 / 60.

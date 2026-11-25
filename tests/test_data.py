@@ -96,3 +96,10 @@ def test_reviewed_excluded_pairs_never_generated():
         for _ in range(200):
             for e in make_candidate(text, GROUPS, rng, mode="confusion")["edits"]:
                 assert (e["old"], e["new"]) not in banned
+
+
+def test_fill_ranges_borrows_neighbour_range():
+    from sindhijev.data import fill_ranges
+    assert fill_ranges([(5, 9), None, (1, 4)]) == [(5, 9), (5, 9), (1, 4)]
+    assert fill_ranges([None, (1, 4)]) == [(1, 4), (1, 4)]
+    assert fill_ranges([None]) == [(0, 0)]
