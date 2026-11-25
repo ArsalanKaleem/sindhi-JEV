@@ -1,0 +1,39 @@
+<!-- title: Python API | description: Use the Checker class from Python. -->
+<h1>Python API</h1>
+<p class="lede">Everything the command line does is one class: <code>sindhijev.tool.Checker</code>.</p>
+
+<h2 id="example">Example</h2>
+<pre><code>from sindhijev.tool import Checker
+
+ck = Checker("sindhijev_v2.onnx")          # or Checker() with SINDHIJEV_WEIGHTS set
+
+r = ck.check("word.png", "ڪلوواٽ اهي")
+print(r["p_wrong"], [r["text"][i] for i in r["suspicious"]])
+
+fixed, changes = ck.repair("word.png", "ڪلوواٽ اهي")
+ranked = ck.pick("word.png", ["ڪلوواٽ اهي", "ڪلوواٽ آهي"])</code></pre>
+
+<h2 id="checker">Checker(weights=None, threads=None)</h2>
+<p>Loads the ONNX model and the bundled Noto Naskh Arabic font (OFL). <code>threads</code> sets ONNX Runtime's
+intra-op threads.</p>
+
+<h3 id="check">check(image, text) → dict</h3>
+<p><code>image</code> is a file path or a NumPy array (grayscale or BGR). Returns <code>text</code> (normalised),
+<code>p_wrong</code>, <code>chars</code> and <code>suspicious</code>, as described in <a href="cli.html#check">check</a>.</p>
+
+<h3 id="check-many">check_many(image, texts) → list[dict]</h3>
+<p>Same as <code>check</code> for several texts on one crop. Each text is scored in its own forward pass (see
+<a href="limitations.html#batching">batching</a>).</p>
+
+<h3 id="repair">repair(image, text, margin=0.6, top_k=3, max_edits=2) → (str, list)</h3>
+<p>Returns the repaired text and a list of changes <code>{"from", "to", "p_wrong": [before, after]}</code>.</p>
+
+<h3 id="pick">pick(image, candidates) → list[dict]</h3>
+<p>Returns the <code>check</code> results for the unique candidates, best (lowest <code>p_wrong</code>) first.</p>
+
+<h2 id="tesseract">tesseract_candidates(image, engines=None, tess="tesseract", psm=7) → dict</h2>
+<p>Runs installed Tesseract language models on the crop and returns <code>{engine: text}</code>.</p>
+
+<h2 id="normalisation">Text normalisation</h2>
+<p>Before scoring, text is NFC-normalised, zero-width joiners are removed, spaces are collapsed, and Latin
+<code>, ; ?</code> become Arabic <span class="ar">، ؛ ؟</span>, exactly as in training and evaluation.</p>

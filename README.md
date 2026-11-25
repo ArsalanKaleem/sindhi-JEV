@@ -6,6 +6,10 @@ Checks whether an OCR candidate for a Sindhi word/line crop is correct, and
 which character's dots disagree. See `docs/phase0_audit.md` for prior work
 (MiniCPM-OCR Jev, OCR-EDR) and the claim being tested.
 
+## Documentation
+
+A documentation site with a live playground: `python site_src/build.py` then `python tools/demo/server.py` and open http://localhost:8770. Sources in `site_src/`; publishing steps in `docs/publishing.md`.
+
 ## Status
 
 Design decisions: `docs/decisions.md`.

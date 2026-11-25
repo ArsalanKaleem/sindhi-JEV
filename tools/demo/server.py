@@ -1,7 +1,7 @@
-"""Local web demo of the sindhijev tool (no publishing, runs on this machine only).
+"""Docs site + checker API on this machine (no publishing). Build the site first: python site_src/build.py
 
-    python tools/demo/server.py [--port 8770] [--weights dist/sindhijev_v2.onnx]
-    open http://localhost:8770
+    python tools/demo/server.py [--port 8770] [--weights dist/sindhijev_v2.onnx] [--host 127.0.0.1]
+    open http://localhost:8770  (playground: /playground.html)
 
 API (JSON): POST /api/check {image, text} | /api/repair {image, text} | /api/pick {image, candidates[]}
 `image` is a data URL / base64 PNG/JPEG, or "sample:<set>/<id>" for a synthetic sample. GET /api/samples lists
@@ -14,6 +14,7 @@ import random
 import sys
 import threading
 import time
+import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -24,7 +25,10 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 from sindhijev.tool import Checker  # noqa: E402
 
-HERE = Path(__file__).resolve().parent
+SITE = (ROOT / "site").resolve()  # built by: python site_src/build.py
+TYPES = {".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8",
+         ".ttf": "font/ttf", ".png": "image/png", ".svg": "image/svg+xml", ".txt": "text/plain; charset=utf-8",
+         ".json": "application/json"}
 SAMPLE_SETS = ["test_font_hard", "test_font"]  # synthetic, unseen fonts; real crops are never served
 CK = None
 SAMPLES = []
@@ -79,12 +83,29 @@ class H(BaseHTTPRequestHandler):
         self.send_header("Content-Type", ctype)
         self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(data)))
+        self.send_header("Access-Control-Allow-Origin", "*")  # the GitHub Pages docs may call a hosted copy
         self.end_headers()
         self.wfile.write(data)
 
+    def do_OPTIONS(self):  # CORS preflight for JSON POSTs from another origin
+        self.send_response(204)
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Max-Age", "86400")
+        self.end_headers()
+
+    def _static(self):
+        """Serve the built docs site (site/); paths may not leave that folder."""
+        rel = urllib.parse.unquote(self.path.split("?", 1)[0].split("#", 1)[0]).lstrip("/") or "index.html"
+        f = (SITE / rel).resolve()
+        if SITE not in f.parents and f != SITE or not f.is_file():
+            return self._send(404, b"not found", "text/plain")
+        return self._send(200, f.read_bytes(), TYPES.get(f.suffix.lower(), "application/octet-stream"))
+
     def do_GET(self):
-        if self.path in ("/", "/index.html"):
-            return self._send(200, (HERE / "index.html").read_bytes(), "text/html; charset=utf-8")
+        if not self.path.startswith("/api/"):
+            return self._static()
         if self.path == "/api/samples":
             return self._send(200, SAMPLES)
         if self.path.startswith("/api/sample/"):
@@ -93,8 +114,6 @@ class H(BaseHTTPRequestHandler):
                 return self._send(404, {"error": "unknown sample"})
             s, i = key.split("/")
             return self._send(200, (ROOT / "data" / "synth" / s / "scan" / f"{i}.png").read_bytes(), "image/png")
-        if self.path == "/font.ttf":
-            return self._send(200, (ROOT / "src" / "sindhijev" / "assets" / "NotoNaskhArabic.ttf").read_bytes(), "font/ttf")
         if self.path == "/api/info":
             return self._send(200, {"temperature": CK.temperature, "char_threshold": CK.char_thr,
                                     "repair_margin": 0.6})
@@ -141,12 +160,15 @@ def main():
     global CK, SAMPLES
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8770)
+    ap.add_argument("--host", default="127.0.0.1", help="0.0.0.0 inside a container (Hugging Face Space)")
     ap.add_argument("--weights", default=str(ROOT / "dist" / "sindhijev_v2.onnx"))
     a = ap.parse_args()
     CK = Checker(a.weights)
     SAMPLES = load_samples()
-    print(f"sindhijev demo on http://localhost:{a.port}", flush=True)
-    ThreadingHTTPServer(("127.0.0.1", a.port), H).serve_forever()
+    if not (SITE / "index.html").exists():
+        print("site/ not built: run python site_src/build.py", flush=True)
+    print(f"sindhijev docs + playground on http://localhost:{a.port}", flush=True)
+    ThreadingHTTPServer((a.host, a.port), H).serve_forever()
 
 
 if __name__ == "__main__":

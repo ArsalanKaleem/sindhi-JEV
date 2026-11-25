@@ -8,11 +8,10 @@ import sys
 def _show(r, as_json):
     if as_json:
         return json.dumps(r, ensure_ascii=False)
-    flags = "".join("^" if i in set(r["suspicious"]) else " " for i in range(len(r["text"])))
+    # no ^ marker line: terminals lay out right-to-left text differently, so a marker would point at the wrong letter
     return (f"p_wrong={r['p_wrong']:.3f}  {r['text']}\n"
             + (f"suspicious letters (positions {r['suspicious']}): "
-               + " ".join(r["text"][i] for i in r["suspicious"]) if r["suspicious"] else "no letter flagged")
-            + ("" if not r["suspicious"] else f"\n{' ' * 15}{flags}"))
+               + " ".join(r["text"][i] for i in r["suspicious"]) if r["suspicious"] else "no letter flagged"))
 
 
 def main(argv=None):

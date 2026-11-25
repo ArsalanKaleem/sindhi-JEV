@@ -1,0 +1,45 @@
+# Builds the documentation site (site_src -> site) and deploys it to GitHub Pages.
+# Manual only: Actions -> "Docs site" -> Run workflow. First enable Pages once:
+# Settings -> Pages -> Build and deployment -> Source: GitHub Actions.
+name: Docs site
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Point the playground at the hosted checker (repository variable SINDHIJEV_API, optional)
+        if: ${{ vars.SINDHIJEV_API != '' }}
+        env:
+          API: ${{ vars.SINDHIJEV_API }}
+        run: |
+          case "$API" in https://*) ;; *) echo "SINDHIJEV_API must start with https://"; exit 1;; esac
+          printf 'window.SINDHIJEV_API = %s;\n' "$(python -c 'import json,os; print(json.dumps(os.environ["API"]))')" > site_src/assets/config.js
+      - run: python site_src/build.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

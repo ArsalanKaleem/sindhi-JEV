@@ -1,0 +1,54 @@
+<!-- title: Command line | description: Reference for sindhijev check, repair and pick. -->
+<h1>Command line</h1>
+<p class="lede">One command, three subcommands. Every subcommand takes a word-crop image and Sindhi text.</p>
+
+<pre><code>sindhijev [--weights FILE] [--json] {check,repair,pick} ...</code></pre>
+<div class="tbl"><table>
+  <tr><th>Option</th><th>Meaning</th></tr>
+  <tr><td><code>--weights FILE</code></td><td>Path to <code>sindhijev_v2.onnx</code>. Default: <code>SINDHIJEV_WEIGHTS</code>, then the download cache.</td></tr>
+  <tr><td><code>--json</code></td><td>Print machine-readable JSON instead of text.</td></tr>
+</table></div>
+
+<h2 id="check">check</h2>
+<p>Scores one OCR text for one crop.</p>
+<pre><code>sindhijev check IMAGE TEXT</code></pre>
+<p>Text output: <code>p_wrong</code> and the flagged letters with their positions (0-based, in reading order).
+JSON output:</p>
+<pre><code>{
+  "text": "ڪلوواٽ آهي",
+  "p_wrong": 0.00025,
+  "chars": [{"i": 0, "char": "ڪ", "score": 0.0}, ...],
+  "suspicious": []
+}</code></pre>
+<div class="tbl"><table>
+  <tr><th>Field</th><th>Meaning</th></tr>
+  <tr><td><code>p_wrong</code></td><td>Probability that the text does not match the image (temperature-scaled on synthetic validation data, T = 1.145).</td></tr>
+  <tr><td><code>chars[].score</code></td><td>Per-letter probability that this letter is wrong.</td></tr>
+  <tr><td><code>suspicious</code></td><td>Positions whose score is above 0.817 (threshold chosen on synthetic validation data). Spaces are never flagged.</td></tr>
+</table></div>
+
+<h2 id="repair">repair</h2>
+<p>Fixes likely dot errors in one OCR text.</p>
+<pre><code>sindhijev repair IMAGE TEXT</code></pre>
+<p>For the three most suspicious letters it tries every reviewed dot partner (for example <span class="ar">ن</span> and
+<span class="ar">ڻ</span>), re-scores, and keeps the best swap only if <code>p_wrong</code> drops by at least 0.6. It
+repeats at most twice. Prints the repaired text and each change.</p>
+<div class="call"><b class="t">Measured on synthetic data only</b>Fixes 980 of 1,000 real-word dot swaps in
+training fonts and 869 of 1,000 in unseen fonts, breaking 1 to 2 correct texts in 2,000. It has not been measured on
+real scans.</div>
+
+<h2 id="pick">pick</h2>
+<p>Scores several OCR outputs for the same crop and ranks them, lowest <code>p_wrong</code> first.</p>
+<pre><code>sindhijev pick IMAGE --cand TEXT [--cand TEXT ...] [--tesseract [PATH]]</code></pre>
+<div class="tbl"><table>
+  <tr><th>Option</th><th>Meaning</th></tr>
+  <tr><td><code>--cand TEXT</code></td><td>A candidate text. Repeat for each candidate.</td></tr>
+  <tr><td><code>--tesseract [PATH]</code></td><td>Also run the installed Tesseract models <code>snd</code>, <code>urd</code>, <code>ara</code>, <code>fas</code> (single-line mode). Missing models are skipped.</td></tr>
+</table></div>
+<div class="call warn"><b class="t">Use check for triage</b>On real word crops, keeping the output that v2 trusts most
+did not beat always using Tesseract <code>snd</code> (CER 0.215 vs 0.181). Ranking which crops to review works better
+than choosing the text automatically.</div>
+
+<h2 id="exit">Exit codes</h2>
+<p><code>0</code> on success, <code>2</code> when <code>pick</code> has no candidates. Errors (unreadable image,
+missing weights) raise with a message.</p>
