@@ -178,3 +178,16 @@ MiniCPM-OCR Jev (`openbmb/MiniCPM-OCR-Jev`, Apache-2.0) is run **as released, no
 - Output `prob_1` = P(correct); error score = 1 - prob_1. Failed items are counted and scored 0.5, never dropped.
 Scope now: synthetic test_hard + test_font_hard (`kaggle/jev.ipynb`, `scripts/jev/`). Real candidates are scored only
 in the final real evaluation (#5). Budget <= 2 GPU h; DEBUG run first to measure speed.
+
+## 2026-11-25: Jev zero-shot results (synthetic)
+
+`results/synth_jev.md`. MiniCPM-OCR Jev as released (repo commit c21a3ca, weights snapshot a0ed278), float16 on a T4
+(reference examples within 0.005 of OpenBMB's values; token-for-token prompt check equal), score-only path with our
+renders. 4,000/4,000 items scored, 0 failures, ~0.12 s/item.
+| set | Jev | text-only | v2 | v2 - Jev [95% CI] |
+|---|---|---|---|---|
+| test_hard | 0.884 | 0.849 | 1.000 | +0.116 [+0.101, +0.130] |
+| test_font_hard | 0.880 | 0.846 | 0.999 | +0.118 [+0.105, +0.133] |
+Jev transfers partly to Sindhi (above the text-only checker, despite zh/en training) but is far below the 7M
+task-specific model on dot-level real-word errors. Jev gives no per-letter output. Real-set scoring follows in #5.
+Jev GPU: 0.18 (debug) + 0.12 (failed run, client path bug) + 0.39 = 0.69 h of its 2 h. GPU total ~33.4 / 60.
