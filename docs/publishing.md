@@ -16,6 +16,13 @@ python dist/hf_space/app.py            # test at http://127.0.0.1:7860 before up
    `src/`, `model/`, `data/`), replacing the template's `README.md`. Commit.
 3. The Space installs `requirements.txt` and starts `app.py` (Gradio 6.32.0, set in `README.md`). Build log:
    **Logs** tab. Address: `https://huggingface.co/spaces/<user>/sindhijev`.
+4. The web uploader may drop folders. If the app says `No module named 'sindhijev'`, upload with the CLI
+   instead (after `hf auth login` with a write token):
+   `hf upload <user>/sindhijev dist/hf_space . --repo-type=space`
+5. ZeroGPU hardware works too (app.py has a never-called `@spaces.GPU` placeholder; the model runs on CPU).
+   CPU basic is the natural choice if your account offers it.
+
+Live since 2026-11-26: https://huggingface.co/spaces/ArsalanKaleem/sindhijev (checked through its API).
 
 The Space is a Gradio app (check / repair / compare). The docs site's playground uses this repository's own API, so
 on GitHub Pages it links to the Space instead (step 2).

@@ -19,6 +19,17 @@ sys.path.insert(0, str(HERE / "src"))
 from sindhijev.tool import Checker  # noqa: E402
 
 CK = Checker(os.environ.get("SINDHIJEV_WEIGHTS", str(HERE / "model" / "sindhijev_v2.onnx")))
+
+# ZeroGPU hardware refuses to start an app without a @spaces.GPU function. The checker runs on CPU (ONNX), so this
+# placeholder is never called and no GPU time is used. On CPU hardware the `spaces` package is absent and this is skipped.
+try:
+    import spaces  # noqa: E402
+
+    @spaces.GPU(duration=5)
+    def _zerogpu_placeholder():
+        return None
+except ImportError:
+    pass
 REPO = "https://github.com/ArsalanKaleem/sindhi-JEV"
 
 CSS = """
