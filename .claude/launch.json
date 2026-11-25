@@ -1,7 +1,33 @@
 {
   "version": "0.0.1",
   "configurations": [
-    {"name": "labeler", "runtimeExecutable": ".venv/Scripts/python", "runtimeArgs": ["-m", "http.server", "8765"], "port": 8765},
-    {"name": "demo", "runtimeExecutable": ".venv/Scripts/python", "runtimeArgs": ["tools/demo/server.py", "--port", "8770"], "port": 8770}
+    {
+      "name": "labeler",
+      "runtimeExecutable": ".venv/Scripts/python",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765"
+      ],
+      "port": 8765
+    },
+    {
+      "name": "demo",
+      "runtimeExecutable": ".venv/Scripts/python",
+      "runtimeArgs": [
+        "tools/demo/server.py",
+        "--port",
+        "8770"
+      ],
+      "port": 8770
+    },
+    {
+      "name": "space",
+      "runtimeExecutable": ".venv/Scripts/python",
+      "runtimeArgs": [
+        "dist/hf_space/app.py"
+      ],
+      "port": 7860
+    }
   ]
 }
