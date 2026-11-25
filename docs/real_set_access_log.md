@@ -1,0 +1,1 @@
+- 2026-11-25 19:54 make_real_items (Jev inputs: crops + candidate renders, no gold or labels) {'words': (471, 3297), 'lines': (80, 560)}

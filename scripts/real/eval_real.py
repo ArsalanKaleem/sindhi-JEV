@@ -1,6 +1,11 @@
 """FINAL evaluation on the frozen real set. Run once per reported model, after all choices are fixed.
 
-    python scripts/real/eval_real.py --final --ckpt runs/main/best.pt --name main [--root data/real]
+    python scripts/real/eval_real.py --final --ckpt runs/main_v2/last.pt --name main_v2 --root data/real/addendum_v1 \
+        --extra abl_ref=runs/abl_ref/last.pt ... --jev runs/jev_real/jev_words.jsonl
+
+--extra NAME=CKPT adds another checkpoint as a method (ablations, v1); its char threshold comes from
+results/synth_NAME.json. --jev adds MiniCPM-OCR Jev scores (rows {"id": "crop_id|engine", "prob_1"}; error score
+1 - prob_1; failed items scored 0.5 and counted). All methods are scored in ONE run per root.
 
 Refuses to run without --final or if the set changed since freeze (realset.load_real). Every run is
 appended to docs/real_set_access_log.md.
@@ -36,7 +41,7 @@ from sindhijev.render import Renderer  # noqa: E402
 from evaluate import load_model  # noqa: E402
 from train import predict  # noqa: E402
 
-METHODS = ["model", "ocr_conf", "text", "voting"]
+BASELINES = ["ocr_conf", "text", "voting"]
 
 
 def encoding_groups():
@@ -66,7 +71,10 @@ def main():
     ap.add_argument("--root", default=str(ROOT / "data" / "real"))
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--boot", type=int, default=2000)
+    ap.add_argument("--extra", action="append", default=[], help="NAME=CKPT, repeatable")
+    ap.add_argument("--jev", default=None, help="Jev scores jsonl for this root")
     a = ap.parse_args()
+    extras = dict(x.split("=", 1) for x in a.extra)
     root = Path(a.root)
     rows = R.load_real(final=a.final, root=root)  # raises unless --final and hashes match FROZEN.json
     log = ROOT / "docs" / "real_set_access_log.md"
@@ -74,7 +82,7 @@ def main():
     is_real = root.resolve() == real_root or real_root in root.resolve().parents
     with open(log if is_real else Path.home() / ".sindhijev_test_access.log", "a", encoding="utf-8") as f:
         f.write(f"- {datetime.datetime.now():%Y-%m-%d %H:%M} eval_real --final name={a.name} ckpt={a.ckpt} "
-                f"root={root.name}\n")
+                f"root={root.name} extras={sorted(extras)} jev={bool(a.jev)}\n")
 
     dev = torch.device(a.device)
     model, st = load_model(a.ckpt, dev)
@@ -83,18 +91,39 @@ def main():
     rend = Renderer(ROOT / "fonts" / model.cfg.get("candidate_font", "NotoNaskhArabic.ttf"), size=48)
     ds = RealSet(root, rows, cands, crops, model.cfg, rend)
     recs = predict(model, DataLoader(ds, batch_size=64, collate_fn=collate), dev, False)
+    extra_recs = {}
+    for name, ck in extras.items():
+        m_x, _ = load_model(ck, dev)
+        extra_recs[name] = predict(m_x, DataLoader(RealSet(root, rows, cands, crops, m_x.cfg, rend), batch_size=64,
+                                                   collate_fn=collate), dev, False)
+        print("scored", name, flush=True)
+    jev, jev_failed = None, 0
+    if a.jev:
+        jev = {}
+        for x in Path(a.jev).read_text(encoding="utf-8").splitlines():
+            j = json.loads(x)
+            ok = j.get("prob_1") is not None and not j.get("error") and 0.0 <= j["prob_1"] <= 1.0
+            jev_failed += not ok
+            jev[j["id"]] = 1 - j["prob_1"] if ok else 0.5
+        missing = [f"{r['crop_id']}|{r['engine']}" for r in ds.rows if f"{r['crop_id']}|{r['engine']}" not in jev]
+        assert not missing, f"Jev scores missing for {len(missing)} candidates, e.g. {missing[:3]}"
+    METHODS = ["model"] + list(extras) + (["jev"] if jev is not None else []) + BASELINES
+    no_char = {"jev"} | {n for n in extras if "nocharhead" in n}  # no per-letter output: char metrics n/a
 
     tc = TextChecker.load(ROOT / "results" / "text_checker.pkl")
     synth = json.loads((ROOT / "results" / f"synth_{a.name}.json").read_text(encoding="utf-8"))
     text_cfg = json.loads((ROOT / "results" / "synth_text_baseline.json").read_text(encoding="utf-8"))
     thr = {"model": synth["char_threshold_from_val"], "text": text_cfg["char_threshold_from_val"],
-           "ocr_conf": 0.5, "voting": 0.5}
+           "ocr_conf": 0.5, "voting": 0.5, "jev": 0.5}
+    for name in extras:
+        thr[name] = json.loads((ROOT / "results" / f"synth_{name}.json").read_text(encoding="utf-8"))[
+            "char_threshold_from_val"]
     enc = encoding_groups()
     by_crop = {}
     for r in ds.rows:
         by_crop.setdefault(r["crop_id"], {})[r["engine"]] = r["cand_text"]
     out_recs = []
-    for r, row in zip(recs, ds.rows):
+    for i, (r, row) in enumerate(zip(recs, ds.rows)):
         cand = row["cand_text"]
         rec = {"cluster": row["crop_id"], "engine": row["engine"], "stratum": row["stratum"],
                "source": row["source_id"], "cand": cand, "gold": row["gold_text"],
@@ -106,6 +135,10 @@ def main():
              "ocr_conf": ocr_confidence(cand, row["seq_conf"], row["char_conf_json"]),
              "text": tc.score(cand),
              "voting": voting(cand, [t for e, t in by_crop[row["crop_id"]].items() if e != row["engine"]])}
+        for name, xr in extra_recs.items():
+            s[name] = (xr[i]["seq_score"], xr[i]["char_score"][:n])
+        if jev is not None:
+            s["jev"] = (jev[f"{row['crop_id']}|{row['engine']}"], [0.0] * n)
         for m, (sq, ch) in s.items():
             rec[f"{m}_seq"] = sq
             rec[f"{m}_char"] = (list(ch) + [0.0] * n)[:n]
@@ -123,12 +156,16 @@ def main():
         for m in METHODS:
             v = view(rs, m)
             o = summarize(v, thr[m])
+            if m in no_char:
+                for k in [k for k in o if k.startswith("char_") or k in ("top1_loc", "n_loc")]:
+                    o[k] = None
             o["auroc_ci"] = bootstrap_ci(v, lambda q: auroc([x["seq_y"] for x in q], [x["seq_score"] for x in q]),
                                          n=a.boot)
             t[m] = o
         return t
 
-    res = {"name": a.name, "ckpt": a.ckpt, "n": len(out_recs), "thresholds": thr,
+    res = {"name": a.name, "ckpt": a.ckpt, "extras": extras, "jev_file": a.jev, "jev_failed": jev_failed,
+           "methods": METHODS, "n": len(out_recs), "thresholds": thr,
            "encoding_only_wrong": dict(Counter(r["engine"] for r in out_recs if r["encoding_only"])),
            "all": table(out_recs)}
     res["by_engine"] = {e: table([r for r in out_recs if r["engine"] == e]) for e in sorted({r["engine"] for r in out_recs})}
@@ -143,7 +180,7 @@ def main():
                                                           for x in out_recs], "a", "b", n=a.boot)
                               for m in METHODS[1:]}
     res["char_by_method_dot_errors_only"] = {m: char_metrics(view([r for r in out_recs if r["dot_error"]], m), thr[m])
-                                             for m in METHODS}
+                                             for m in METHODS if m not in no_char}
     # Engine selection: per crop keep the output a method trusts most; compare with each single engine and the
     # oracle (best possible pick). Uses ALL errors (incl. encoding variants) because this measures final text.
     sel = {f"select_by_{m}": selection(out_recs, f"{m}_seq") for m in METHODS}
@@ -157,6 +194,7 @@ def main():
     od.mkdir(exist_ok=True)
     tag = f"{a.name}_{root.name}"
     (od / f"real_{tag}.json").write_text(json.dumps(res, indent=1, ensure_ascii=False, default=str), encoding="utf-8")
+    f3 = lambda v: "n/a" if v is None else f"{v:.3f}"  # noqa: E731
     lines = [f"# Real-set results: {a.name} on {root.name} ({len(out_recs)} candidates, "
              f"{len({r['cluster'] for r in out_recs})} crops)", "",
              "| method | AUROC [95% CI] | AUPRC | char F1 | top-1 loc | recall@10% | recall@20% | recall@30% |",
@@ -164,7 +202,7 @@ def main():
     for m in METHODS:
         o = res["all"][m]
         lines.append(f"| {m} | {o['auroc']:.3f} [{o['auroc_ci'][0]:.3f}, {o['auroc_ci'][1]:.3f}] | {o['auprc']:.3f} | "
-                     f"{o.get('char_f1', float('nan')):.3f} | {o.get('top1_loc', float('nan')):.3f} | "
+                     f"{f3(o.get('char_f1'))} | {f3(o.get('top1_loc'))} | "
                      f"{o['route@10']['recall']:.3f} | {o['route@20']['recall']:.3f} | {o['route@30']['recall']:.3f} |")
     lines += ["", "Model minus baseline, AUROC (paired, crop-clustered bootstrap):", ""]
     for m, d in res["paired_vs_model"].items():
