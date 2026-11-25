@@ -1,0 +1,30 @@
+{
+  "title": "Sindhi-Jev: a small dot-aware checker for Sindhi OCR",
+  "upload_type": "software",
+  "description": "<p>Sindhi-Jev checks whether Sindhi OCR text matches a scanned word crop and flags the letters whose dots look wrong. It is a 7M-parameter render-and-verify model that runs on CPU (ONNX).</p><p>On a frozen, hand-labelled set of real scans (336 word crops from 14 printed Sindhi sources, 5 Tesseract models) it ranks wrong OCR outputs above correct ones with AUROC 0.884 (0.935 on dot errors), level with a 2B general verifier (MiniCPM-OCR Jev, 0.885 / 0.879) and above OCR confidence (0.835), engine agreement (0.819) and a text-only checker (0.714). It is built for word crops; on full lines it fails (0.458).</p><p>This record archives the code, the trained model (ONNX), the result files, the labelling protocol and decision log, and the labels of the real benchmark (real scan images are not included). Documentation: https://arsalankaleem.me/sindhi-JEV/ . Python package: https://pypi.org/project/sindhijev/ . Live demo: https://huggingface.co/spaces/ArsalanKaleem/sindhijev .</p>",
+  "creators": [
+    {
+      "name": "Kaleem, Arsalan",
+      "affiliation": "Independent researcher, Shikarpur, Sindh, Pakistan",
+      "orcid": "0009-0002-9054-6965"
+    }
+  ],
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sindhi",
+    "OCR",
+    "OCR error detection",
+    "Arabic script",
+    "Perso-Arabic",
+    "dot errors",
+    "low-resource languages",
+    "render-and-verify",
+    "benchmark"
+  ],
+  "language": "eng",
+  "related_identifiers": [
+    {"identifier": "https://github.com/ArsalanKaleem/sindhi-JEV", "relation": "isSupplementTo", "scheme": "url"},
+    {"identifier": "https://pypi.org/project/sindhijev/", "relation": "isSupplementedBy", "scheme": "url"},
+    {"identifier": "https://arsalankaleem.me/sindhi-JEV/", "relation": "isDocumentedBy", "scheme": "url"}
+  ]
+}

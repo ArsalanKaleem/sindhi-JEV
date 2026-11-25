@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use Sindhi-Jev, please cite it as below. A paper is in preparation."
+title: "Sindhi-Jev: a small dot-aware checker for Sindhi OCR"
+type: software
+authors:
+  - family-names: Kaleem
+    given-names: Arsalan
+    affiliation: "Independent researcher, Shikarpur, Sindh, Pakistan"
+    orcid: "https://orcid.org/0009-0002-9054-6965"
+version: 0.1.1
+date-released: 2026-11-26
+license: Apache-2.0
+repository-code: "https://github.com/ArsalanKaleem/sindhi-JEV"
+url: "https://arsalankaleem.me/sindhi-JEV/"
+keywords:
+  - Sindhi
+  - OCR
+  - OCR error detection
+  - Arabic script
+  - low-resource languages
+abstract: >-
+  A 7M-parameter render-and-verify model that checks whether Sindhi OCR text
+  matches a scanned word crop and flags letters with dot errors, with a frozen,
+  hand-labelled real benchmark (336 word crops from 14 printed sources).
+  AUROC 0.884 overall and 0.935 on dot errors on that benchmark.
