@@ -220,3 +220,15 @@ v2 0.935, Jev 0.879. Lines: v2 0.458 (fails), Jev 0.910. Engine selection by v2 
 Decisions: v2 stays the reported model (no change after seeing real data). The tool is scoped to word crops.
 Line-level training is recorded as future work, not done on this test set. Issues #5 and #3 are done.
 Jev GPU 1.04 h of 2; total ~33.75 / 60.
+
+## 2026-11-26: pip tool, calibration, batch effect, dot repair
+
+- **Tool** (`src/sindhijev/tool.py`, `cli.py`, `pyproject.toml`; docs `docs/tool.md`): ONNX (dynamo exporter;
+  the legacy exporter fixed the text length), 29.6 MB single file, parity with PyTorch < 2e-5. Scoped to word crops
+  (real-set result). Weights stay local until a GitHub release is approved; PyPI name `sindhijev` was free on 2026-11-25.
+- **Calibration:** temperature 1.145 fitted on synthetic val + val_hard (`results/calibration_main_v2.json`).
+- **Batch effect:** BatchNorm makes padded columns non-zero, so a score depends on its batch. Effect on reported
+  AUROC: <= 0.0001 on all synthetic test sets (`results/batch_effect.json`). Decision: the tool scores one item per
+  forward pass; the real-set results (batch 64) are NOT re-run (it would be a second access); stated as a limitation.
+- **Dot repair** (`results/dot_repair.md`): margin 0.6 chosen on val_hard; test_hard 980/1000 fixed, 1 broken;
+  test_font_hard 869/1000, 2 broken. Synthetic only; not run on the real set (would need a new pre-registered run).

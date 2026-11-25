@@ -21,3 +21,4 @@ gold_pass1_*.csv
 data/synth/
 *.pt
 .claude/settings.local.json
+*.egg-info/
