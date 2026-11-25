@@ -23,6 +23,11 @@ SRC = hits[0].rsplit("/scripts/jev/", 1)[0]
 OUT = "/kaggle/working/jev"
 os.makedirs(OUT, exist_ok=True)
 print("bundle:", SRC)
+for s in SETS:  # fail here (before any GPU work) if the bundle layout is not what run_jev.py expects
+    for sub in ("manifest.jsonl", "scan", "cand"):
+        p = f"{SRC}/data/synth/{s}/{sub}"
+        assert os.path.exists(p), f"missing {p}; the dataset layout differs: !ls -R /kaggle/input | head"
+    print(s, len(os.listdir(f"{SRC}/data/synth/{s}/scan")), "scan images")
 !nvidia-smi --query-gpu=name,memory.total --format=csv"""),
     ("code", """# Install Jev SDK (transformers backend) and download the weights
 REPO = "/kaggle/working/MiniCPM-OCR"
@@ -91,13 +96,22 @@ for dt in DTYPES:
     proc.terminate(); proc.wait()
 assert DTYPE, "no dtype passed the self-check: see service_*.log; do not run the scoring cell"
 print("using", DTYPE)"""),
-    ("code", """# Score the synthetic test sets (resumable; per-session time cap)
+    ("code", """# Score the synthetic test sets (resumable; per-session time cap). Any client failure stops the notebook.
 for s in SETS:
     left = MAX_HOURS - (time.time() - T0) / 3600
     if left <= 0:
+        print("time cap reached before", s)
         break
-    lim = "--limit 50" if DEBUG else ""
-    !python {SRC}/scripts/jev/run_jev.py --set {SRC}/data/synth/{s} --out {OUT}/jev_{s}.jsonl --batch 16 --max-hours {left:.3f} {lim}"""),
+    cmd = [sys.executable, f"{SRC}/scripts/jev/run_jev.py", "--set", f"{SRC}/data/synth/{s}",
+           "--out", f"{OUT}/jev_{s}.jsonl", "--batch", "16", "--max-hours", f"{left:.3f}"]
+    if DEBUG:
+        cmd += ["--limit", "50"]
+    print(" ".join(cmd), flush=True)
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    print(r.stdout[-3000:], r.stderr[-3000:], flush=True)
+    assert r.returncode == 0, f"run_jev.py failed on {s} (exit {r.returncode}); see the error above"
+    n = sum(1 for _ in open(f"{OUT}/jev_{s}.jsonl"))
+    print(f"{s}: {n} rows in {OUT}/jev_{s}.jsonl", flush=True)"""),
     ("code", """# Log GPU time and pack results
 hours = (time.time() - T0) / 3600
 info = {"model": "openbmb/MiniCPM-OCR-Jev", "repo_commit": COMMIT, "dtype": DTYPE, "selfcheck": checks,
