@@ -59,9 +59,8 @@ py -3.12 -m venv .venv            # Linux: python3.12 -m venv .venv
 .venv/Scripts/python -m pip install -r requirements.lock.txt
 ```
 
-`scripts/prepare_text.py` (rebuilding the text spans from a Wikipedia dump) also needs `sindhinorm`, the author's
-Sindhi normaliser from a separate project, which is not published yet. Everything else, including training on the
-existing spans and all evaluation, works without it.
+`scripts/prepare_text.py` (rebuilding the text spans from a Wikipedia dump) uses the author's Sindhi normaliser
+[`sindhinorm`](https://pypi.org/project/sindhinorm/), pinned to 0.1.0 (the version used for the spans) in the lock file.
 
 Rendering uses HarfBuzz (`uharfbuzz`) + FreeType directly, so it does **not**
 need Pillow's libraqm and gives the same output on Windows and Kaggle.
