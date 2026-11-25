@@ -242,3 +242,4 @@ Jev GPU 1.04 h of 2; total ~33.75 / 60.
 - Sweep fixes: README now links docs and demo and states the word-crop scope; repository description no longer
   mentions lines; `requirements.lock.txt` no longer pins `sindhinorm` to a local path (only `prepare_text.py` needs it);
   review-cost table added from stored results (no new real-set access). Issues #7 and #11 closed.
+- Correction (same day): `sindhinorm` is on PyPI (0.1.0, 0.2.0); the lock file now pins sindhinorm==0.1.0, the version used to build the spans.

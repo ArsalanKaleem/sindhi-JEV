@@ -27,3 +27,4 @@ threadpoolctl==3.8.0
 torch==2.15.0+cpu
 typing_extensions==4.16.0
 uharfbuzz==0.57.0
+sindhinorm==0.1.0
