@@ -1,14 +1,38 @@
-# Sindhi-Jev: a small dot-aware verifier for Sindhi OCR
+# Sindhi-Jev: a small dot-aware checker for Sindhi OCR
 
 [![tests](https://github.com/ArsalanKaleem/sindhi-JEV/actions/workflows/tests.yml/badge.svg)](https://github.com/ArsalanKaleem/sindhi-JEV/actions/workflows/tests.yml)
+[![docs](https://img.shields.io/badge/docs-arsalankaleem.me%2Fsindhi--JEV-1a5fd0)](https://arsalankaleem.me/sindhi-JEV/)
+[![live demo](https://img.shields.io/badge/%F0%9F%A4%97%20live%20demo-Hugging%20Face-ffcc4d)](https://huggingface.co/spaces/ArsalanKaleem/sindhijev)
+[![licence](https://img.shields.io/badge/licence-Apache--2.0-555)](LICENSE)
 
-Checks whether an OCR candidate for a Sindhi word/line crop is correct, and
-which character's dots disagree. See `docs/phase0_audit.md` for prior work
-(MiniCPM-OCR Jev, OCR-EDR) and the claim being tested.
+**[Documentation](https://arsalankaleem.me/sindhi-JEV/)** ·
+**[Live demo](https://huggingface.co/spaces/ArsalanKaleem/sindhijev)** ·
+**[Results](https://arsalankaleem.me/sindhi-JEV/results.html)** ·
+**[Roadmap](https://github.com/ArsalanKaleem/sindhi-JEV/issues/14)**
+
+Sindhi letters differ by dots (ب ٻ ڀ پ, ن ڻ, ج ڄ, د ڏ ڌ). OCR engines often get the shape right and the dots wrong,
+and many such mistakes are still real words, so a spell checker cannot see them. Sindhi-Jev is a 7M-parameter model
+that looks at the **scanned word crop and the OCR text together**, scores how likely the text is wrong, and flags
+the letters whose dots look wrong. It runs on a CPU in about 20 ms per crop.
+
+On a frozen, hand-labelled set of real scans (336 word crops, 14 printed sources), it ranks wrong OCR outputs above
+correct ones with **AUROC 0.884, and 0.935 on dot errors**: level with a 2-billion-parameter general verifier
+(MiniCPM-OCR Jev, 0.885 / 0.879) and above OCR confidence, engine agreement and a text-only checker. It is built
+for **word crops**: on full lines it fails (0.458). Details: [final results](docs/final_real_results.md); prior
+work and the claim being tested: [novelty audit](docs/phase0_audit.md).
+
+```bash
+pip install -e .                                   # from this repository (PyPI release pending)
+export SINDHIJEV_WEIGHTS=dist/sindhijev_v2.onnx     # model file: see docs/tool.md
+sindhijev check word.png "ڪلوواٽ اهي"              # p_wrong + suspicious letters
+sindhijev repair word.png "ڪلوواٽ اهي"             # fix likely dot errors
+```
 
 ## Documentation
 
-A documentation site with a live playground: `python site_src/build.py` then `python tools/demo/server.py` and open http://localhost:8770. Sources in `site_src/`; publishing steps in `docs/publishing.md`.
+Published at **https://arsalankaleem.me/sindhi-JEV/** (sources in `site_src/`, deployed by the manual "Docs site"
+workflow). Locally: `python site_src/build.py`, then `python tools/demo/server.py` and open http://localhost:8770.
+Publishing steps: `docs/publishing.md`.
 
 ## Status
 
@@ -25,7 +49,7 @@ Design decisions: `docs/decisions.md`.
 | 3 Jev zero-shot | MiniCPM-OCR Jev (2B) as released: AUROC 0.88 on unseen-font real-word swaps vs v2 0.999 (text-only 0.85). `results/synth_jev.md` | ~0.7 |
 | 2 Blind relabel | words (34): error-label kappa 0.77, letter F1 0.94; lines (8): kappa 1.00, letter F1 0.92 (keyboard variants folded); pass 1 kept | 0 |
 | 4 Final real evaluation | words: v2 AUROC 0.884 (Jev 0.885, OCR conf 0.835, voting 0.819, text 0.714); **dot errors 0.935** (Jev 0.879); full lines fail (0.458). `docs/final_real_results.md` | ~0.35 (Jev) |
-| 5 Tool | `sindhijev check / repair / pick` on CPU (ONNX, 30 MB), word crops; dot repair fixes 98% / 87% of synthetic real-word swaps (seen / unseen fonts). `docs/tool.md`; not published yet | 0 |
+| 5 Tool | `sindhijev check / repair / pick` on CPU (ONNX, 30 MB), word crops; dot repair fixes 98% / 87% of synthetic real-word swaps (seen / unseen fonts). `docs/tool.md`. Live: [docs](https://arsalankaleem.me/sindhi-JEV/), [demo](https://huggingface.co/spaces/ArsalanKaleem/sindhijev); PyPI pending | 0 |
 | Next | paper, release: see the [Roadmap](https://github.com/ArsalanKaleem/sindhi-JEV/issues/14) | ~33.75 / 60 used |
 
 ## Setup (Windows or Linux, Python 3.12)
@@ -33,8 +57,11 @@ Design decisions: `docs/decisions.md`.
 ```bash
 py -3.12 -m venv .venv            # Linux: python3.12 -m venv .venv
 .venv/Scripts/python -m pip install -r requirements.lock.txt
-.venv/Scripts/python -m pip install ../Morph/morphtok-sd-ur/packages/sindhinorm   # or: pip install sindhinorm
 ```
+
+`scripts/prepare_text.py` (rebuilding the text spans from a Wikipedia dump) also needs `sindhinorm`, the author's
+Sindhi normaliser from a separate project, which is not published yet. Everything else, including training on the
+existing spans and all evaluation, works without it.
 
 Rendering uses HarfBuzz (`uharfbuzz`) + FreeType directly, so it does **not**
 need Pillow's libraqm and gives the same output on Windows and Kaggle.

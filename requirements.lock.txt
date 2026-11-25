@@ -22,7 +22,6 @@ pytest==9.2.0
 scikit-learn==1.9.1
 scipy==1.18.1
 setuptools==78.1.0
-sindhinorm @ file:///C:/Projects/Morph/morphtok-sd-ur/packages/sindhinorm
 sympy==1.14.0
 threadpoolctl==3.8.0
 torch==2.15.0+cpu
