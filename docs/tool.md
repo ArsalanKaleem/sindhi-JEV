@@ -3,8 +3,7 @@
 A 7M-parameter model (v2) exported to ONNX (~30 MB). No GPU and no PyTorch needed.
 
 ```
-pip install sindhijev            # not on PyPI yet: pip install -e .  (from this repository)
-set SINDHIJEV_WEIGHTS=dist\sindhijev_v2.onnx   # until the weights are in a GitHub release
+pip install sindhijev          # the model downloads once from the v0.1.0 release (SHA-256 checked)
 
 sindhijev check word.png "سنڌ جي"        # probability the text is wrong + suspicious letters
 sindhijev repair word.png "سنڌ جي"       # try dot fixes; keep one only if it clearly wins
