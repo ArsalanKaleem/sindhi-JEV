@@ -251,3 +251,10 @@ byte-identical to the checked build). Verified from a fresh environment: `pip in
 onnxruntime, numpy, opencv-python-headless, uharfbuzz, freetype-py; the model downloads from the release with a
 matching SHA-256; check / pick give the expected results. GPU total recomputed from the session logs: ~33.6 / 60
 (v1 ~8.2, v2 9.74, ablations 14.59, Jev 1.03); earlier running totals had drifted to 33.75 by rounding.
+
+## 2026-11-26: DOI
+
+Zenodo archived release v0.1.1 through the GitHub integration (record created by the author's switch, metadata from
+`.zenodo.json`, creator ORCID 0009-0002-9054-6965, Apache-2.0). DOI for all versions (cited everywhere):
+10.5281/zenodo.24544095; this version: 10.5281/zenodo.24544096. v0.1.1 changes only metadata and docs; model and
+PyPI package are those of v0.1.0. Issue #12 done.

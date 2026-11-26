@@ -9,6 +9,7 @@ authors:
     orcid: "https://orcid.org/0009-0002-9054-6965"
 version: 0.1.1
 date-released: 2026-11-26
+doi: 10.5281/zenodo.24544095
 license: Apache-2.0
 repository-code: "https://github.com/ArsalanKaleem/sindhi-JEV"
 url: "https://arsalankaleem.me/sindhi-JEV/"
